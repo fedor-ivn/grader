@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        ".yaspellerrc.json": "jsonc"
+    },
+    "python.formatting.provider": "black"
+}

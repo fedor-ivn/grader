@@ -1,0 +1,23 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+  - id: check-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+- repo: https://github.com/psf/black
+  rev: 22.10.0
+  hooks:
+  - id: black
+# - repo: https://github.com/hcodes/yaspeller.git
+#   rev: v8.0.1
+#   hooks:
+#   - id: yaspeller
+- repo: local
+  hooks:
+  - id: rewrap
+    name: Rewrap
+    entry: "npx rewrap --in-place"
+    language: node
+    types: [markdown]
+    additional_dependencies: ["@stkb/rewrap"]
