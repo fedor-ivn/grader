@@ -3,6 +3,7 @@ from asyncio import Future
 from io import BytesIO
 from typing import List
 
+
 async def cache_stream(stream: BytesIO) -> AsyncGenerator[bytes, None]:
     chunks: List[bytes] = []
     has_finished = False
