@@ -2,44 +2,46 @@
 import os
 
 
-def get_names(old_dirs):
-    new_names = []
-    for directory in old_dirs:
-        directory = directory.split('\\')
-        list_splitted = directory[len(dir) - 1].split('-')
-        del list_splitted[0]
-        name = ''
-        for i in range(len(list_splitted)):
-            name += list_splitted[i]
-            if i != len(list_splitted) - 1:
-                 name += '-'
-        new_names.append(name)
-    return new_names
+def get_new_name(directory):
+    full_name = directory.split("/")[-1]
+    new_name = full_name[full_name.find("-") + 1 :]
+    return new_name
 
 
-def get_dirs(dir_paths, counter):
-    dirs = []
-    for dir_path in dir_paths:
-        files_and_dirs = os.listdir(dir_path)
-        for item in files_and_dirs:
-            item_path = os.path.join(dir_path, item)
-            if os.path.isdir(item_path):
-                dirs.append(item_path)
+def get_dirs(diriectory_path, counter):
+    directories = []
+    files_and_diriectories = os.listdir(diriectory_path)
+
+    for item in files_and_diriectories:
+        item_path = os.path.join(diriectory_path, item)
+        if os.path.isdir(item_path):
+            directories.append(item_path)
+
     if counter == 0:
-        return dirs
+        return directories
     else:
-        return get_dirs(dirs, counter-1)
-    
+        return sum(
+            [
+                get_dirs(directory, counter - 1)
+                for directory in directories
+            ],
+            [],
+        )
 
-def create_links(dir_paths):
-    
-    old_dirs = get_dirs(dir_paths, 1)
-    
-    new_names = get_names(old_dirs)
-    print(new_names)
 
-    for i in range(len(old_dirs)):
-        os.symlink(old_dirs[i], './tasks/' + new_names[i])
+def create_links(directory):
+    old_directories = get_dirs(directory, 2)
+    new_names = []
+    for directory in old_directories:
+        new_names.append(get_new_name(directory))
 
-dir_paths = ['./checkers/01-introduction', './checkers/02-bash-programming']
-create_links(dir_paths)
+    for old_directory, new_name in zip(
+        old_directories, new_names
+    ):
+        if os.path.exists(f"tasks/{new_name}"):
+            print(f"Symlink {new_name} already exists!")
+        else:
+            os.symlink(old_directory, f"tasks/{new_name}")
+
+
+create_links("checkers")
