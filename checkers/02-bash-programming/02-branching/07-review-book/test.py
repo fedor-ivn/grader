@@ -1,4 +1,4 @@
-from interactive_bash.src.index import InteractiveSession
+from interactive_bash.main import InteractiveSession
 
 HELP = 'Доступные команды:\n\n\
   help         - вывести справку по командам\n\

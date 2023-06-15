@@ -16,4 +16,4 @@ url = "interactive_bash"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ca9a6b0ff3a0ad91ccf743460609755ce104cb5ef48d75ca181f62f246302e44"
+content-hash = "b6a441137d148f67e82421643aa5676979f9c46f3ecb03f1ebefe08cbc0a79a7"

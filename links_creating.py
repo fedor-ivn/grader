@@ -4,9 +4,9 @@ import os
 
 def get_names(old_dirs):
     new_names = []
-    for dir in old_dirs:
-        dir = dir.split('''\\''')
-        list_splitted = dir[len(dir) - 1].split('-')
+    for directory in old_dirs:
+        directory = directory.split('\\')
+        list_splitted = directory[len(dir) - 1].split('-')
         del list_splitted[0]
         name = ''
         for i in range(len(list_splitted)):
