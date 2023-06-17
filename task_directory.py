@@ -42,7 +42,7 @@ class TaskSymlink:
             print(f"Symlink {name} already exists")
         else:
             os.symlink(
-                self.source_directory,
+                f"../{self.source_directory}",
                 task_path,
             )
 
@@ -94,19 +94,20 @@ class TasksSymlinks:
 
 
 class TasksDirectory:
-    def __init__(self, tasks_path="tasks"):
-        self.tasks_path = tasks_path
-        tasks_symlinks = TasksSymlinks(
-            "tasks", SourceDirectory("checkers", 2)
-        )
-        tasks_symlinks.healthcheck()
+    def __init__(self, tasks_symlinks: TasksSymlinks):
+        self.symlinks = tasks_symlinks
+        self.symlinks.healthcheck()
 
     def is_present(self, task_name):
-        return task_name in os.listdir(self.tasks_path)
+        return task_name in os.listdir(
+            self.symlinks.target_path
+        )
 
     def get_task(self, task_name):
         if self.is_present(task_name):
-            task_path = f"{self.tasks_path}/{task_name}"
+            task_path = (
+                f"{self.symlinks.target_path}/{task_name}"
+            )
             return Task(task_path)
         else:
             raise KeyError(f"Task {task_name} not found")
@@ -117,4 +118,13 @@ class Task:
         self.task_path = task_path
 
 
-task = TasksDirectory().get_task("review-book")
+# fmt: off
+tasks = TasksDirectory(
+    TasksSymlinks(
+        "tasks",
+        SourceDirectory("checkers", 2)
+    ),
+)
+# fmt: on
+
+tasks.get_task("review-book")
