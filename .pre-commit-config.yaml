@@ -9,6 +9,11 @@ repos:
   rev: 22.10.0
   hooks:
   - id: black
+# - repo: https://github.com/pycqa/isort
+#   rev: 5.11.2
+#   hooks:
+#     - id: isort
+#       args: ["--profile", "black"]
 # - repo: https://github.com/hcodes/yaspeller.git
 #   rev: v8.0.1
 #   hooks:
