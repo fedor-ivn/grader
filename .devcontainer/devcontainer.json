@@ -11,7 +11,8 @@
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {},
 		"ghcr.io/devcontainers-contrib/features/black:2": {},
-		"ghcr.io/devcontainers-contrib/features/pre-commit:2": {}
+		"ghcr.io/devcontainers-contrib/features/pre-commit:2": {},
+		"ghcr.io/devcontainers-contrib/features/mypy:2": {}
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available
 	// locally. "forwardPorts": [], Use 'postCreateCommand' to run commands
