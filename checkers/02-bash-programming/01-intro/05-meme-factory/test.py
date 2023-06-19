@@ -1,20 +1,29 @@
 import subprocess
-from interactive_bash import main
+import os
+import termios
+import difflib
 
-file = "./solution.sh"
+
+# Define the command to run
+cmd = "solution.sh"
 
 
 class InteractiveSession:
     def __init__(self, path, args=[]):
+        self.master, self.slave = os.openpty()
+        old = termios.tcgetattr(self.slave)
+        old[3] &= ~termios.ECHO
+        termios.tcsetattr(
+            self.slave, termios.TCSADRAIN, old
+        )
+
         self.child = subprocess.Popen(
             ["bash", path, *args],
-            stdout=subprocess.PIPE,
-            stdin=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stdout=self.slave,
+            stdin=self.slave,
+            stderr=self.slave,
             text=True,
         )
-        self.stdout = self.child.stdout
-        self.stderr = self.child.stderr
 
     def health_check(self):
         pass
@@ -22,29 +31,23 @@ class InteractiveSession:
     def enter_line(self, line: str, add_newline=True):
         if add_newline:
             line += "\n"
-        self.child.stdin.write(line)
-        self.child.stdin.flush()
+        os.write(self.master, line.encode())
 
     def expect_output(self, expected_output: str):
-        output, errors = self.child.communicate()
-        print(output, errors)
+        while True:
+            line = os.read(self.master, 100).decode("utf-8")
+            print(line)
+            if line == expected_output:
+                print("win")
+                return True
 
-        if output == expected_output:
-            print("Вывод совпадает с требованиями")
-            return True
-
-        else:
             return False
 
     def terminate(self):
-        self.child.terminate()
+        self.child.terminate("123")
 
 
-session = InteractiveSession(file)
-
-if session.expect_output("Мем сохранён!\n"):
-    print("+")
-else:
-    print("-")
-session.enter_line("Пример")
-session.enter_line("example.jpg")
+session = InteractiveSession("solution.sh")
+session.enter_line("Введите что-нибудь")
+session.expect_output("Введите что-нибудь")
+session.expect_output("Введите что-нибудь\r\n")

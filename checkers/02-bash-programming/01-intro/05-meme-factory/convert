@@ -1,4 +1,4 @@
-script_template = '''#!/usr/bin/env python
+#!/usr/bin/env python
 
 import pickle
 import sys
@@ -26,16 +26,5 @@ class ArgsProxy:
 
 
 if __name__ == "__main__":
-    args_proxy = ArgsProxy(pipe_name="{pipe_name}")
+    args_proxy = ArgsProxy(pipe_name="example")
     args_proxy.send_arguments()
-
-'''
-
-if __name__ == "__main__":
-    eval(
-        compile(
-            script_template.format(pipe_name="example"),
-            filename="<string>",
-            mode="exec",
-        )
-    )
