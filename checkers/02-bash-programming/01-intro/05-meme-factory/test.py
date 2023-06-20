@@ -1,7 +1,6 @@
 import subprocess
 import os
 import termios
-import difflib
 
 
 # Define the command to run
@@ -40,9 +39,13 @@ class InteractiveSession:
     def expect_output(self, expected_output: str):
         while True:
             line = os.read(self.master, 100).decode("utf-8")
+
             if line == expected_output:
                 return True
             return False
+        
+    def check_errors(self):
+        return self.child.wait()
 
     def terminate(self):
         self.child.terminate("123")
@@ -86,6 +89,17 @@ class ConsoleCriterion(Criterion):
 
     def criterion_check(self) -> bool:
         if self.session.expect_output(self.expected_output):
+            return True
+        else:
+            return False
+        
+    
+class ErrorCriterion(Criterion):
+    def __init__(self, session: InteractiveSession):
+        self.session = session
+
+    def criterion_check(self) -> bool:
+        if session.check_errors() == 0:
             return True
         else:
             return False
@@ -167,6 +181,15 @@ tests_list = [
         ),
         Result(
             5, "Скрипт выводит сообщение, что мем сохранён"
+        ),
+    ),
+
+    Test(
+        ErrorCriterion(
+            session
+        ),
+        Result(
+            30, "Скрипт выполняется без ошибоок"
         ),
     ),
 ]
