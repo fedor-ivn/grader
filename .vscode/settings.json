@@ -2,5 +2,14 @@
     "files.associations": {
         ".yaspellerrc.json": "jsonc"
     },
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.linting.mypyEnabled": true,
 }
+// {
+//     "python.linting.ignorePatterns": [ "week04/*.py" ],
+//     "python.analysis.disabled": [
+//         "week04/*.py"
+//       ],
+// }
