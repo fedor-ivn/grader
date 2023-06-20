@@ -43,7 +43,7 @@ class InteractiveSession:
             if line == expected_output:
                 return True
             return False
-        
+
     def check_errors(self):
         return self.child.wait()
 
@@ -92,8 +92,8 @@ class ConsoleCriterion(Criterion):
             return True
         else:
             return False
-        
-    
+
+
 class ErrorCriterion(Criterion):
     def __init__(self, session: InteractiveSession):
         self.session = session
@@ -138,14 +138,14 @@ class Test:
         return self.result.score
 
 
-class Tests:
-    def __init__(self):
-        self.tests = []
+class Test_set:
+    def __init__(self, tests: list):
+        self.tests = tests
 
     def add_test(self, test):
         self.tests.append(test)
 
-    def run_tests(self):
+    def run_all(self):
         for test in self.tests:
             test.run()
 
@@ -160,41 +160,48 @@ class Tests:
 
 session = InteractiveSession("./solution.sh")
 
-tests = Tests()
-
 tests_list = [
     Test(
-        ConsoleCriterion("Подпись к мему: ", session),
-        Result(5, "Скрипт запрашивает подпись для мема"),
+        ConsoleCriterion(
+            expected_output="Подпись к мему: ",
+            session=session,
+        ),
+        Result(
+            max_score=5,
+            comment="Скрипт запрашивает подпись для мема",
+        ),
     ),
     Test(
         ResponseCriterion(
-            "четыре", "Название файла: ", session
+            input_line="четыре",
+            expected_output="Название файла: ",
+            session=session,
         ),
         Result(
-            5, "Скрипт запрашивает путь выходного файла"
+            max_score=5,
+            comment="Скрипт запрашивает путь выходного файла",
         ),
     ),
     Test(
         ResponseCriterion(
-            "test.png", "Мем сохранён!\r\n", session
+            input_line="test.png",
+            expected_output="Мем сохранён!\r\n",
+            session=session,
         ),
         Result(
-            5, "Скрипт выводит сообщение, что мем сохранён"
+            max_score=5,
+            comment="Скрипт выводит сообщение, что мем сохранён",
         ),
     ),
-
     Test(
-        ErrorCriterion(
-            session
-        ),
+        ErrorCriterion(session=session),
         Result(
-            30, "Скрипт выполняется без ошибоок"
+            max_score=30,
+            comment="Скрипт выполняется без ошибок",
         ),
     ),
 ]
 
-for test in tests_list:
-    tests.add_test(test)
+tests = Test_set(tests_list)
 
-tests.run_tests()
+tests.run_all()
