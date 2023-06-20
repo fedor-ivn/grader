@@ -3,5 +3,6 @@ from cli.testing_system.command_line_testing_system import CommandLineTestingSys
 from cli.user_input import UserInput
 
 if __name__ == "__main__":
-    UserInput(CliArgumentParser())\
-        .get_command().execute(CommandLineTestingSystem())
+    user_input = UserInput(CliArgumentParser())
+    command = user_input.get_command()
+    command.execute(CommandLineTestingSystem())
