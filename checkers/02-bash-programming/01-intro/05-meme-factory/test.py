@@ -1,10 +1,8 @@
 import subprocess
 import os
 import termios
-
-
-# Define the command to run
-cmd = "./solution.sh"
+from threading import Thread
+import lel
 
 
 class InteractiveSession:
@@ -39,6 +37,8 @@ class InteractiveSession:
     def expect_output(self, expected_output: str):
         while True:
             line = os.read(self.master, 100).decode("utf-8")
+
+            print(line)
 
             if line == expected_output:
                 return True
@@ -105,6 +105,44 @@ class ErrorCriterion(Criterion):
             return False
 
 
+class ArgumentsCriterion(Criterion):
+    def __init__(self, thread, args):
+        self.thread = thread
+        self.args = args
+
+    def criterion_check(self) -> bool:
+        executable = lel.MockExecutable(
+            "convert", lel.MockExecutablePipe("example")
+        )
+        executable.create()
+        executable.pipe.create()
+
+        args: list[str] = []
+        t = Thread(target=executable.pipe.read, args=[args])
+        t.start()
+
+        master, slave = os.openpty()
+        old = termios.tcgetattr(slave)
+        old[3] &= ~termios.ECHO
+        termios.tcsetattr(slave, termios.TCSADRAIN, old)
+
+        child = subprocess.Popen(
+            ["bash", "./reference-solution.sh", *args],
+            stdout=slave,
+            stdin=slave,
+            stderr=slave,
+            text=True,
+        )
+
+        os.write(master, b"123\n")
+        os.write(master, b"123\n")
+
+        t.join(timeout=10)
+        print(args)
+
+        return True
+
+
 class Result:
     def __init__(self, max_score, comment):
         self.score = 0
@@ -158,7 +196,7 @@ class Test_set:
         return score
 
 
-session = InteractiveSession("./solution.sh")
+session = InteractiveSession("./reference-solution.sh")
 
 tests_list = [
     Test(
@@ -191,6 +229,13 @@ tests_list = [
         Result(
             max_score=5,
             comment="Скрипт выводит сообщение, что мем сохранён",
+        ),
+    ),
+    Test(
+        ArgumentsCriterion(thread="", args=""),
+        Result(
+            max_score=55,
+            comment="Изображение",
         ),
     ),
     Test(
