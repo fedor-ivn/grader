@@ -16,11 +16,16 @@ class UserInput:
     def get_command(self) -> UserCommand:
         args = self.argument_parser.parse_args()
         if args.command_name == "run":
-            return RunCommand(TaskOf(args.task_name), SolutionOf(args.solution_path))
+            return RunCommand(
+                TaskOf(args.task_name),
+                SolutionOf(args.solution_path),
+            )
         elif args.command_name == "submit":
-            return SubmitCommand(TaskOf(args.task_name), SolutionOf(args.solution_path))
+            return SubmitCommand(
+                TaskOf(args.task_name),
+                SolutionOf(args.solution_path),
+            )
         elif args.command_name == "text":
             return TextCommand(TaskOf(args.task_name))
         elif args.command_name == "hint":
             return HintCommand(TaskOf(args.task_name))
-

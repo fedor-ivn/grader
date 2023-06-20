@@ -2,8 +2,6 @@ from abc import ABC, abstractmethod
 import subprocess
 import os
 import termios
-from threading import Thread
-import lel
 
 
 class InteractiveSession:
@@ -49,7 +47,7 @@ class InteractiveSession:
         return self.child.wait()
 
     def terminate(self):
-        self.child.terminate("123")
+        self.child.terminate()
 
 
 class Criterion(ABC):
@@ -110,44 +108,6 @@ class ErrorCriterion(Criterion):
             return False
 
 
-class ArgumentsCriterion(Criterion):
-    def __init__(self, thread, args):
-        self.thread = thread
-        self.args = args
-
-    def check(self) -> bool:
-        executable = lel.MockExecutable(
-            "convert", lel.MockExecutablePipe("example")
-        )
-        executable.create()
-        executable.pipe.create()
-
-        args: list[str] = []
-        t = Thread(target=executable.pipe.read, args=[args])
-        t.start()
-
-        master, slave = os.openpty()
-        old = termios.tcgetattr(slave)
-        old[3] &= ~termios.ECHO
-        termios.tcsetattr(slave, termios.TCSADRAIN, old)
-
-        child = subprocess.Popen(
-            ["bash", "./reference-solution.sh", *args],
-            stdout=slave,
-            stdin=slave,
-            stderr=slave,
-            text=True,
-        )
-
-        os.write(master, b"123\n")
-        os.write(master, b"123\n")
-
-        t.join(timeout=10)
-        print(args)
-
-        return True
-
-
 class Result:
     def __init__(self, max_score, comment):
         self.score = 0
@@ -181,7 +141,7 @@ class Test:
         return self.result.score
 
 
-class TestSet:
+class Test_set:
     def __init__(self, tests: list):
         self.tests = tests
 
@@ -203,32 +163,26 @@ class TestSet:
 
 session = InteractiveSession("./reference-solution.sh")
 
-session = MockExecutableSession(
-    IOSession(
-        Session()
-    )
-)
-
 tests_list = [
     Test(
         ConsoleCriterion(
-            expected_output="Подпись к мему: ",
+            expected_output="Какую директорию посмотреть? - ",
             session=session,
         ),
         Result(
-            max_score=5,
-            comment="Скрипт запрашивает подпись для мема",
+            max_score=15,
+            comment="Скрипт запрашивает путь до директории",
         ),
     ),
     Test(
         ResponseCriterion(
-            input_line="четыре",
-            expected_output="Название файла: ",
+            input_line="test_folder",
+            expected_output="",
             session=session,
         ),
         Result(
-            max_score=5,
-            comment="Скрипт запрашивает путь выходного файла",
+            max_score=25,
+            comment="Скрипт показывает содержимое указанной директории",
         ),
     ),
     Test(
@@ -238,22 +192,15 @@ tests_list = [
             session=session,
         ),
         Result(
-            max_score=5,
-            comment="Скрипт выводит сообщение, что мем сохранён",
-        ),
-    ),
-    Test(
-        ArgumentsCriterion(thread="", args=""),
-        Result(
-            max_score=55,
-            comment="Изображение",
+            max_score=10,
+            comment="Скрипт не изменяет рабочую директорию",
         ),
     ),
     Test(
         ErrorCriterion(session=session),
         Result(
-            max_score=30,
-            comment="Скрипт выполняется без ошибок",
+            max_score=50,
+            comment="Скрипт работает бесконечно",
         ),
     ),
 ]
