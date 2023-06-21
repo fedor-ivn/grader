@@ -3,7 +3,57 @@ import subprocess
 import os
 import termios
 from threading import Thread
+
+from more_itertools import flatten
 import lel
+
+
+
+
+class TestSet:
+    def __init__(self, tests: list[Test]):
+        self.tests = tests
+
+    def add_test(self, test):
+        self.tests.append(test)
+
+    def run_all(self):
+        for test in self.tests:
+            test.run()
+
+        print(f"Итого: {self.get_overall_score()} баллов")
+
+    def get_overall_score(self):
+        score = 0
+        for test in self.tests:
+            score += test.get_score()
+        return score
+
+
+class TaskGrade:
+    def __init__(self, test_set: TestSet):
+        self.test_set = test_set
+
+    def grade(self):
+        pass
+
+
+class IOSetup:
+    def __init__(self) -> None:
+        pass
+
+    def get_args(self) -> dict[str, str]:
+        slave = 1
+
+
+class BashSession:
+    def __init__(self, setups: list[Setup]):
+        self.setups = setups
+
+    def run(self) -> None:
+        popen_args = flatten(
+            (setup.get_args() for setup in self.setups)
+        )
 
 
 class InteractiveSession:
@@ -181,33 +231,9 @@ class Test:
         return self.result.score
 
 
-class TestSet:
-    def __init__(self, tests: list):
-        self.tests = tests
-
-    def add_test(self, test):
-        self.tests.append(test)
-
-    def run_all(self):
-        for test in self.tests:
-            test.run()
-
-        print(f"Итого: {self.get_overall_score()} баллов")
-
-    def get_overall_score(self):
-        score = 0
-        for test in self.tests:
-            score += test.get_score()
-        return score
-
-
 session = InteractiveSession("./reference-solution.sh")
 
-session = MockExecutableSession(
-    IOSession(
-        Session()
-    )
-)
+session = MockExecutableSession(IOSession(Session()))
 
 tests_list = [
     Test(

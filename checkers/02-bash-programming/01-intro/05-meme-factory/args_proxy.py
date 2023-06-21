@@ -10,8 +10,8 @@ class ArgsProxy:
     and sends command line arguments
     """
 
-    def __init__(self, pipe_name: str):
-        self.pipe_name = pipe_name
+    def __init__(self, pipe_path: str):
+        self.pipe_path = pipe_path
 
     def send_arguments(self) -> None:
         """
@@ -21,12 +21,12 @@ class ArgsProxy:
         Saves all the args using pickle.
         """
         args = sys.argv[1:]
-        with open(self.pipe_name, "wb") as pipe:
+        with open(self.pipe_path, "wb") as pipe:
             pickle.dump(args, pipe)
 
 
 if __name__ == "__main__":
-    args_proxy = ArgsProxy(pipe_name="{pipe_name}")
+    args_proxy = ArgsProxy(pipe_path="{pipe_path}")
     args_proxy.send_arguments()
 
 '''
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     eval(
         compile(
-            script_template.format(pipe_name="example"),
+            script_template.format(pipe_path="example"),
             filename="<string>",
             mode="exec",
         )
