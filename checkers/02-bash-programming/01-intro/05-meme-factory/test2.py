@@ -236,9 +236,7 @@ class MemeFactoryTest:
                         ArgumentsCriterion(convert_mock),
                     ]
                 ),
-                OutputCriterion(
-                    "Мем сохранён!\r\n"
-                )
+                OutputCriterion("Мем сохранён!\r\n"),
             ]
         )
 

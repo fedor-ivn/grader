@@ -8,8 +8,6 @@ from more_itertools import flatten
 import lel
 
 
-
-
 class TestSet:
     def __init__(self, tests: list[Test]):
         self.tests = tests
