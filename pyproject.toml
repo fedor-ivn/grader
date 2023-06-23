@@ -9,6 +9,10 @@ readme = "README.md"
 python = "^3.11"
 interactive_bash = {path = "./interactive_bash/"}
 more-itertools = "^9.1.0"
+pydantic = "^1.10.9"
+requests = "^2.31.0"
+types-requests = "^2.31.0.1"
+dacite = "^1.8.1"
 
 
 [build-system]
