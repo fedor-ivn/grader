@@ -1,6 +1,6 @@
 from cli.solution.solution import Solution
 from cli.testing_system.testing_system import TestingSystem
-from task_directory import Task
+
 
 
 class CommandLineTestingSystem(TestingSystem):
