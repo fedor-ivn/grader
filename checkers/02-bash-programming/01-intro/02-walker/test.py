@@ -1,210 +1,249 @@
 from abc import ABC, abstractmethod
-import subprocess
+import errno
 import os
+import pickle
 import termios
+from subprocess import Popen
+from threading import Thread
+from typing import Any
+
+import args_proxy
 
 
-class InteractiveSession:
-    def __init__(self, path, args=[]):
-        self.master, self.slave = os.openpty()
-        old = termios.tcgetattr(self.slave)
-        old[3] &= ~termios.ECHO
-        termios.tcsetattr(
-            self.slave, termios.TCSADRAIN, old
-        )
+class PseudoTerminal(ABC):
+    @abstractmethod
+    def create_fds(self):
+        ...
 
-        self.child = subprocess.Popen(
-            ["bash", path, *args],
-            stdout=self.slave,
-            stdin=self.slave,
-            stderr=self.slave,
-            text=True,
-        )
-        self.stderr = self.child.stderr
-        self.stdout = self.child.stdout
 
-    def health_check(self) -> None:
+class SimplePseudoTerminal(PseudoTerminal):
+    def __init__(self):
         pass
+
+    def create_fds(self):
+        return os.openpty()
+
+
+class NoEchoPseudoTerminal(PseudoTerminal):
+    def __init__(self, pseudo_terminal) -> None:
+        self._pseudo_terminal = pseudo_terminal
+
+    def create_fds(self):
+        master, slave = self._pseudo_terminal.create_fds()
+        old = termios.tcgetattr(slave)
+        old[3] &= ~termios.ECHO
+        termios.tcsetattr(slave, termios.TCSADRAIN, old)
+        return master, slave
+
+
+class IBashSession:
+    def __init__(self, process: Popen, master):
+        self._process = process
+        self._master = master
 
     def enter_line(
         self, line: str, add_newline: bool = True
-    ) -> None:
+    ):
         if add_newline:
             line += "\n"
-        os.write(self.master, line.encode())
+        os.write(self._master, line.encode())
 
     def expect_output(self, expected_output: str):
-        while True:
-            line = os.read(self.master, 100).decode("utf-8")
+        line = os.read(self._master, 100)
+        return line == expected_output.encode()
 
-            print(line)
+    def prompt(self, expected_prompt: str, enter: str):
+        ok = self.expect_output(expected_prompt)
+        self.enter_line(enter)
+        return ok
 
-            if line == expected_output:
-                return True
-            return False
 
-    def check_errors(self):
-        return self.child.wait()
+class IBash:
+    def __init__(self, path: str):
+        self._path = path
+        self._pty = NoEchoPseudoTerminal(
+            SimplePseudoTerminal()
+        )
+        # todo: govnokod
+        self._args = []
 
-    def terminate(self):
-        self.child.terminate()
+    def start_session(self) -> IBashSession:
+        master, slave = self._pty.create_fds()
+        process = Popen(
+            ["bash", self._path, *self._args],
+            stdout=slave,
+            stdin=slave,
+            stderr=slave,
+            text=True,
+        )
+        return IBashSession(process, master)
 
 
 class Criterion(ABC):
     @abstractmethod
-    def check(self) -> bool:
-        ...
+    def test(self, solution: str):
+        pass
 
 
-class Feedback(ABC):
-    @abstractmethod
-    def get_feedback(self) -> str:
-        ...
+class PipeSession:
+    def __init__(self, args, thread: Thread, timeout: int):
+        self.args = args
+        self.thread = thread
+        self.timeout = timeout
+
+    def start_session(self):
+        self.thread.start()
+
+    def collect_args(self):
+        self.thread.join(timeout=self.timeout)
+        if self.thread.is_alive():
+            raise TimeoutError
+        return self.args
 
 
-class ResponseCriterion(Criterion):
-    def __init__(
-        self,
-        input_line,
-        expected_output,
-        session: InteractiveSession,
-    ):
-        self.input_line = input_line
-        self.expected_output = expected_output
-        self.session = session
+class MockExecutablePipe:
+    def __init__(self, name: str):
+        self.name: str = name
 
-    def check(self) -> bool:
-        self.session.enter_line(self.input_line)
-        if self.session.expect_output(self.expected_output):
-            return True
-        else:
-            return False
-
-
-class ConsoleCriterion(Criterion):
-    def __init__(
-        self,
-        expected_output,
-        session: InteractiveSession,
-    ):
-        self.expected_output = expected_output
-        self.session = session
-
-    def check(self) -> bool:
-        if self.session.expect_output(self.expected_output):
-            return True
-        else:
-            return False
-
-
-class ErrorCriterion(Criterion):
-    def __init__(self, session: InteractiveSession):
-        self.session = session
-
-    def check(self) -> bool:
-        if session.check_errors() == 0:
-            return True
-        else:
-            return False
-
-
-class Result:
-    def __init__(self, max_score, comment):
-        self.score = 0
-        self.max_score = max_score
-        self.comment = comment
-
-    def maximize_score(self):
-        self.score = self.max_score
-
-    def get_score(self):
-        return self.score
-
-    def get_comment(self):
-        return self.comment
-
-
-class Test:
-    def __init__(self, criterion, result):
-        self.criterion = criterion
-        self.result = result
-
-    def run(self):
-        if self.criterion.criterion_check():
-            self.result.maximize_score()
-
-        print(
-            f"{self.result.get_comment()} - {self.result.get_score()} баллов"
+    def create(self) -> PipeSession:
+        try:
+            if os.path.exists(self.name):
+                os.remove(self.name)
+            os.mkfifo(self.name)
+        except OSError as error:
+            if error.errno != errno.EEXIST:
+                raise
+        args = []
+        # todo: timeout const govnokod
+        return PipeSession(
+            args, Thread(target=self.read, args=[args]), 1
         )
 
-    def get_score(self):
-        return self.result.score
+    def read(self, args: list[str]) -> None:
+        with open(self.name, "rb") as pipe:
+            pickled_args: list[str] = pickle.load(pipe)
+            args += pickled_args
 
 
-class Test_set:
-    def __init__(self, tests: list):
-        self.tests = tests
+class MockExecutable:
+    def __init__(self, name: str, pipes_path: str):
+        self.name = name
+        self.pipe_path = f"{pipes_path}/{name}"
+        self.pipe = MockExecutablePipe(self.pipe_path)
 
-    def add_test(self, test):
-        self.tests.append(test)
+    def create(self) -> PipeSession:
+        with open(self.name, "w") as executable:
+            executable.write(
+                args_proxy.script_template.format(
+                    pipe_path=self.pipe_path
+                )
+            )
 
-    def run_all(self):
-        for test in self.tests:
-            test.run()
+        os.chmod(self.name, 0o755)
+        env_path_list: list[str] = os.environ["PATH"].split(
+            os.pathsep
+        )
 
-        print(f"Итого: {self.get_overall_score()} баллов")
+        cwd = os.getcwd()
+        if cwd not in env_path_list:
+            os.environ["PATH"] = os.pathsep.join(
+                [cwd] + env_path_list
+            )
+        return self.pipe.create()
 
-    def get_overall_score(self):
-        score = 0
-        for test in self.tests:
-            score += test.get_score()
-        return score
+
+class OutputCriterion(Criterion):
+    def __init__(self, expected_output: str):
+        self._expected_output = expected_output
+
+    def test(self, solution: IBashSession):
+        is_expected = solution.expect_output(
+            self._expected_output
+        )
+        print(is_expected)
+        return is_expected
 
 
-session = InteractiveSession("./reference-solution.sh")
+class PromptCriterion(Criterion):
+    def __init__(self, expected_prompt: str, enter: str):
+        self._expected_prompt = expected_prompt
+        self._enter = enter
 
-tests_list = [
-    Test(
-        ConsoleCriterion(
-            expected_output="Какую директорию посмотреть? - ",
-            session=session,
-        ),
-        Result(
-            max_score=15,
-            comment="Скрипт запрашивает путь до директории",
-        ),
-    ),
-    Test(
-        ResponseCriterion(
-            input_line="test_folder",
-            expected_output="",
-            session=session,
-        ),
-        Result(
-            max_score=25,
-            comment="Скрипт показывает содержимое указанной директории",
-        ),
-    ),
-    Test(
-        ResponseCriterion(
-            input_line="test.png",
-            expected_output="Мем сохранён!\r\n",
-            session=session,
-        ),
-        Result(
-            max_score=10,
-            comment="Скрипт не изменяет рабочую директорию",
-        ),
-    ),
-    Test(
-        ErrorCriterion(session=session),
-        Result(
-            max_score=50,
-            comment="Скрипт работает бесконечно",
-        ),
-    ),
-]
+    def test(self, solution: IBashSession):
+        is_expected = solution.prompt(
+            self._expected_prompt, self._enter
+        )
+        print(is_expected)
+        return is_expected
 
-tests = Test_set(tests_list)
 
-tests.run_all()
+class ArgumentsCriterion(Criterion):
+    def __init__(self, mock_executable: MockExecutable):
+        self._mock_executable = mock_executable
+        # todo: govnokod
+        self._pipe_session = self._mock_executable.create()
+        self._pipe_session.start_session()
+
+    def test(self, solution: IBashSession):
+        collected_args = self._pipe_session.collect_args()
+        print(collected_args)
+        return True
+
+
+class SequentialCriteria(Criterion):
+    def __init__(self, criteria: list[Criterion]):
+        self._criteria = criteria
+
+    def test(self, solution: IBashSession):
+        for criterion in self._criteria:
+            result = criterion.test(solution)
+            if not result:
+                return False
+        return True
+
+
+class Criteria:
+    def __init__(self, criteria: list[Criterion]):
+        self._criteria = criteria
+
+    def test(self, solution: IBashSession):
+        return [
+            criterion.test(solution)
+            for criterion in self._criteria
+        ]
+
+
+class MemeFactoryTest:
+    def __init__(self):
+        convert_mock = MockExecutable("convert", "pipes")
+        pipe_session = convert_mock.create()
+        self._criteria = SequentialCriteria(
+            [
+                SequentialCriteria(
+                    [
+                        PromptCriterion(
+                            expected_prompt="Подпись к мему: ",
+                            enter="четыре",
+                        ),
+                        PromptCriterion(
+                            expected_prompt="Название файла: ",
+                            enter="six-four.jpg",
+                        ),
+                    ]
+                ),
+                SequentialCriteria(
+                    [
+                        ArgumentsCriterion(convert_mock),
+                    ]
+                ),
+                OutputCriterion(
+                    "Мем сохранён!\r\n"
+                )
+            ]
+        )
+
+    def test(self, solution: IBash):
+        self._criteria.test(solution.start_session())
+
+
+MemeFactoryTest().test(IBash("solution.sh"))
