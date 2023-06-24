@@ -27,7 +27,8 @@
 				"ms-python.python",
 				"ms-python.vscode-pylance",
 				"GitHub.copilot",
-				"genieai.chatgpt-vscode"
+				"genieai.chatgpt-vscode",
+				"ms-vsliveshare.vsliveshare"
 			]
 		}
 	}

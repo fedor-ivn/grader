@@ -4,6 +4,7 @@ import asyncio
 import sys
 import os
 
+
 HELP = """Доступные команды:
 
   help         - вывести справку по командам
@@ -48,7 +49,9 @@ class InteractiveSession:
         expected_lines = expected_output.split("\n")
         for expected_line in expected_lines:
             try:
-                line, errs = self.child.stdout.communicate(timeout=15)
+                line, errs = self.child.stdout.communicate(
+                    timeout=15
+                )
             except subprocess.TimeoutExpired:
                 self.child.kill()
 
