@@ -16,7 +16,7 @@ from uri.method_uri import MethodURI
 
 class RawMethod(Method[Any]):
     def __init__(
-        self, method_uri: MethodURI, content: Content[]
+        self, method_uri: MethodURI, content
     ) -> None:
         self._method_uri = method_uri
         self._content = content
