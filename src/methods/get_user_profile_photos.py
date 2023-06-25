@@ -4,8 +4,9 @@ from methods.method import Method
 from bot.inner_bot import Bot
 from content import JsonRequestContent
 from methods.raw_method import RawMethod
-from tg_types.user.profile_photos import ProfilePhotos
+from tgtypes.user.profile_photos import ProfilePhotos
 from uri.method_uri import MethodURI
+from uri.uri import URI
 
 
 class GetUserProfilePhotos(Method[ProfilePhotos]):
@@ -13,16 +14,13 @@ class GetUserProfilePhotos(Method[ProfilePhotos]):
         self._bot = bot
         self.user_id = user_id
 
-    def call(self) -> ProfilePhotos:
+    def call(self, bot: URI) -> ProfilePhotos:
         instance = from_dict(
             data_class=ProfilePhotos,
             data=RawMethod(
-                MethodURI(
-                    "getUserProfilePhotos", self._bot
-                ),
                 JsonRequestContent(
                     {"user_id": self.user_id}
                 ),
-            ).call(),
+            ).call(MethodURI("getUserProfilePhotos", bot)),
         )
         return instance  # type: ignore

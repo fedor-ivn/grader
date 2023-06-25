@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from tg_types.user.user import User
+from tgtypes.user.user import User
 
 
 @dataclass

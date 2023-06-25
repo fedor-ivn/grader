@@ -1,5 +1,10 @@
+from typing import TypeVar
+from methods.method import Method
+from uri.method_uri import MethodURI
 from uri.telegram_api_uri import TelegramApiURI
 from uri.uri import URI
+
+T = TypeVar("T")
 
 
 class Bot(URI):
@@ -11,3 +16,6 @@ class Bot(URI):
 
     def construct_uri(self) -> str:
         return f"{self._api_uri.construct_uri()}bot{self._token}/"
+
+    def call_method(self, method: Method[T]) -> T:
+        return method.call(self)

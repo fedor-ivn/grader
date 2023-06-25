@@ -1,9 +1,8 @@
-from bot.inner_bot import Bot
 from uri.uri import URI
 
 
 class MethodURI(URI):
-    def __init__(self, method: str, bot: Bot) -> None:
+    def __init__(self, method: str, bot: URI) -> None:
         self._method = method
         self._bot = bot
 

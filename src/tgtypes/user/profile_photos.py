@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from tg_types.photo_size import PhotoSize
+from tgtypes.photo_size import PhotoSize
 
 
 @dataclass

@@ -12,6 +12,7 @@ from exceptions import (
 
 from methods.method import Method
 from uri.method_uri import MethodURI
+from uri.uri import URI
 
 T = TypeVar("T")
 
@@ -19,17 +20,15 @@ T = TypeVar("T")
 class RawMethod(Method[Any], Generic[T]):
     def __init__(
         self,
-        method_uri: MethodURI,
         content: RequestContent[T],
     ) -> None:
-        self._method_uri = method_uri
         self._content = content
 
-    def call(self) -> Any:
-        # print(self._method_uri.construct_uri())
+    def call(self, method_uri: URI) -> Any:
+        # print(method_uri.construct_uri())
         try:
             response = requests.post(  # type: ignore
-                self._method_uri.construct_uri(),
+                method_uri.construct_uri(),
                 **self._content.get_request_kwargs(),
             )
         except KeyError:
