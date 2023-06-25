@@ -8,7 +8,7 @@ T = TypeVar("T")
 
 class RequestContent(ABC, Generic[T]):
     @abstractmethod
-    def get_request_args(self) -> T:
+    def get_request_kwargs(self) -> T:
         ...
 
 
@@ -18,7 +18,7 @@ class JsonRequestContent(
     def __init__(self, content: dict[str, Any]) -> None:
         self._content = content
 
-    def get_request_args(
+    def get_request_kwargs(
         self,
     ) -> dict[str, str | dict[str, str]]:
         return {
@@ -28,5 +28,5 @@ class JsonRequestContent(
 
 
 class EmptyRequestContent(RequestContent[dict[Any, Any]]):
-    def get_request_args(self) -> dict[Any, Any]:
+    def get_request_kwargs(self) -> dict[Any, Any]:
         return {}
