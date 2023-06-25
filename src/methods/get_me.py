@@ -1,5 +1,5 @@
 from methods.method import Method
-from content import EmptyContent
+from content import EmptyRequestContent
 from uri.method_uri import MethodURI
 from tg_types.user.me import Me
 from bot.inner_bot import Bot
@@ -14,6 +14,6 @@ class GetMe(Method[Me]):
         return Me(
             **RawMethod(
                 MethodURI("getMe", self._bot),
-                EmptyContent(),
+                EmptyRequestContent(),
             ).call()
         )

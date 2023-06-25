@@ -6,14 +6,16 @@ from typing import Any, Generic, TypeVar
 T = TypeVar("T")
 
 
-class Content(ABC, Generic[T]):
+class RequestContent(ABC, Generic[T]):
     @abstractmethod
     def get_request_args(self) -> T:
         ...
 
 
-class JsonContent(Content[dict[str, str | dict[str, str]]]):
-    def __init__(self, content: Any) -> None:
+class JsonRequestContent(
+    RequestContent[dict[str, str | dict[str, str]]]
+):
+    def __init__(self, content: dict[str, Any]) -> None:
         self._content = content
 
     def get_request_args(
@@ -25,6 +27,6 @@ class JsonContent(Content[dict[str, str | dict[str, str]]]):
         }
 
 
-class EmptyContent(Content[dict[Any, Any]]):
+class EmptyRequestContent(RequestContent[dict[Any, Any]]):
     def get_request_args(self) -> dict[Any, Any]:
         return {}

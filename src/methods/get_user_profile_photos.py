@@ -2,7 +2,7 @@ from dacite import from_dict
 
 from methods.method import Method
 from bot.inner_bot import Bot
-from content import JsonContent
+from content import JsonRequestContent
 from methods.raw_method import RawMethod
 from tg_types.user.profile_photos import ProfilePhotos
 from uri.method_uri import MethodURI
@@ -20,7 +20,9 @@ class GetUserProfilePhotos(Method[ProfilePhotos]):
                 MethodURI(
                     "getUserProfilePhotos", self._bot
                 ),
-                JsonContent({"user_id": self.user_id}),
+                JsonRequestContent(
+                    {"user_id": self.user_id}
+                ),
             ).call(),
         )
         return instance  # type: ignore
