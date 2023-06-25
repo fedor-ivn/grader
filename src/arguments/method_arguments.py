@@ -1,13 +1,13 @@
 from typing import Any
-from method_arguments.method_argument import (
-    AbstractMethodArgument,
+from arguments.argument import (
+    MethodArgument,
 )
 from more_itertools import flatten
 
 
-class MethodArguments(AbstractMethodArgument):
+class MethodArguments(MethodArgument):
     def __init__(
-        self, methods: list[AbstractMethodArgument] = []
+        self, methods: list[MethodArgument] = []
     ) -> None:
         self.methods = methods
 

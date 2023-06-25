@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Self
 
 
-class AbstractMethodArgument(ABC):
+class MethodArgument(ABC):
     @abstractmethod
     def to_dict(self) -> dict[str, Any]:
         ...

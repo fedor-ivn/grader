@@ -1,11 +1,11 @@
-from method_arguments.method_argument import (
-    AbstractMethodArgument,
+from arguments.argument import (
+    MethodArgument,
 )
-from method_arguments.inline import InlineMethodArgument
+from arguments.inline import InlineArgument
 from typing import Any
 
 
-class AllowedUpdatesArgument(AbstractMethodArgument):
+class AllowedUpdatesArgument(MethodArgument):
     def __init__(
         self,
         message: bool = True,
@@ -17,7 +17,7 @@ class AllowedUpdatesArgument(AbstractMethodArgument):
         self._callback_query = callback_query
 
     def to_dict(self) -> dict[str, Any]:
-        return InlineMethodArgument(
+        return InlineArgument(
             "allowed_updates",
             [
                 key

@@ -1,17 +1,17 @@
 from typing import Any
-from method_arguments.method_argument import (
-    AbstractMethodArgument,
+from arguments.argument import (
+    MethodArgument,
 )
-from method_arguments.empty import EmptyArgument
+from arguments.empty import EmptyArgument
 
 
-class MessageConfig(AbstractMethodArgument):
+class MessageConfig(MethodArgument):
     def __init__(
         self,
         disable_web_page_preview: bool = False,
         disable_notification: bool = False,
         protect_content: bool = False,
-        reply_markup: AbstractMethodArgument = EmptyArgument(),
+        reply_markup: MethodArgument = EmptyArgument(),
     ) -> None:
         self.disable_web_page_preview = (
             disable_web_page_preview

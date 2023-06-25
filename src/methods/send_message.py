@@ -1,10 +1,10 @@
-from method_arguments.method_argument import (
-    AbstractMethodArgument,
+from arguments.argument import (
+    MethodArgument,
 )
-from method_arguments.empty import EmptyArgument
-from method_arguments.inline import InlineMethodArgument
-from method_arguments.message.text import MessageText
-from method_arguments.method_arguments import (
+from arguments.empty import EmptyArgument
+from arguments.inline import InlineArgument
+from arguments.message.text import MessageText
+from arguments.method_arguments import (
     MethodArguments,
 )
 from methods.method import Method
@@ -21,11 +21,11 @@ class SendMessage(Method[Message]):
         self,
         chat_id: int,
         text: MessageText,
-        message_thread_id: AbstractMethodArgument = EmptyArgument(),
+        message_thread_id: MethodArgument = EmptyArgument(),
         # entities: list[MessageEntity]=[],
-        config: AbstractMethodArgument = EmptyArgument(),
-        reply: AbstractMethodArgument = EmptyArgument(),
-        reply_markup: AbstractMethodArgument = EmptyArgument(),
+        config: MethodArgument = EmptyArgument(),
+        reply: MethodArgument = EmptyArgument(),
+        reply_markup: MethodArgument = EmptyArgument(),
     ) -> None:
         self._chat_id = chat_id
         self._message_thread_id = message_thread_id
@@ -62,7 +62,7 @@ class SendMessage(Method[Message]):
                 JsonRequestContent(
                     MethodArguments(
                         [
-                            InlineMethodArgument(
+                            InlineArgument(
                                 "chat_id", self._chat_id
                             ),
                             self._message_thread_id,

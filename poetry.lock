@@ -120,19 +120,6 @@ files = [
 ]
 
 [[package]]
-name = "interactive-bash"
-version = "0.1.0"
-description = ""
-optional = false
-python-versions = "^3.11"
-files = []
-develop = false
-
-[package.source]
-type = "directory"
-url = "interactive_bash"
-
-[[package]]
 name = "more-itertools"
 version = "9.1.0"
 description = "More routines for operating on iterables, beyond itertools"
@@ -217,6 +204,19 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "tmpgrader"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = "^3.11"
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "tmpgrader"
+
+[[package]]
 name = "types-requests"
 version = "2.31.0.1"
 description = "Typing stubs for requests"
@@ -272,4 +272,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "95d3a40f5835f16fe1fe5b5137b7b74b22b9d376b1305f7673c893a2c7c56897"
+content-hash = "08d114245d6d0154249ed3073e2444986b35fb92960525149e6ae06337956275"

@@ -1,10 +1,10 @@
 from typing import Any
-from method_arguments.method_argument import (
-    AbstractMethodArgument,
+from arguments.argument import (
+    MethodArgument,
 )
 
 
-class ReplyingMessage(AbstractMethodArgument):
+class ReplyingMessage(MethodArgument):
     def __init__(
         self,
         reply_to_message_id: int,

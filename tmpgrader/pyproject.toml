@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "tmpgrader"
+version = "0.1.0"
+description = ""
+authors = ["Иванов Федор Евгеньевич <f.e.ivanov@tinkoff.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

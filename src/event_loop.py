@@ -1,6 +1,7 @@
 from bot.inner_bot import Bot
 from update.handlers import Handlers
 from update.update import Update
+from update.updates import Updates
 
 
 class EventLoop:
@@ -8,7 +9,6 @@ class EventLoop:
         self._handlers = handlers
 
     def handle_updates(
-        self, bot: Bot, updates: list[Update]
+        self, bot: Bot, updates: Updates
     ) -> None:
-        for update in updates:
-            update.handle(bot, self._handlers)
+        updates.handle(bot, self._handlers)

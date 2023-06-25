@@ -1,10 +1,10 @@
-from method_arguments.method_argument import (
-    AbstractMethodArgument,
+from arguments.argument import (
+    MethodArgument,
 )
 from typing import Any
 
 
-class MessageText(AbstractMethodArgument):
+class MessageText(MethodArgument):
     pass
 
 

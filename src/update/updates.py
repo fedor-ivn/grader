@@ -1,26 +1,20 @@
-from typing import Any
-
-# class Handlers:
-#     def __init__(self, message_handlers: list[Handler] = [], ) -> None:
-
-
-# class MessageUpdate(Update):
-#     _id: int
-#     _message: Message
-
-#     def handle(self, handlers: Handlers):
-#         handlers.handle_message(self._message)
+from arguments.argument import MethodArgument
+from arguments.empty import EmptyArgument
+from bot.inner_bot import Bot
+from update.handlers import Handlers
+from update.update import Update
 
 
-class Updates:
-    def __init__(self, raw_updates: dict[str, Any]) -> None:
-        self._raw_updates = raw_updates
-        # self.messages =
+class Updates(Update):
+    def __init__(self, updates: list[Update]) -> None:
+        self._updates = updates
 
-    # def parse(self) -> None:
+    def handle(self, bot: Bot, handlers: Handlers) -> None:
+        for update in self._updates:
+            update.handle(bot, handlers)
 
-    # messages: list[Message],
-    # edited_messages: list[Message],
-    # channel_posts: list[Message],
-    # edited_channel_posts: list[Message],
-    # inline_queries: list[InlineQuery],
+    def updated_offset(self) -> MethodArgument:
+        if not self._updates:
+            return EmptyArgument()
+        last_update = self._updates[-1]
+        return last_update.updated_offset()

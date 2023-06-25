@@ -1,11 +1,9 @@
 from dataclasses import dataclass
 from typing import Any
-from tgtypes.user.user import User
-from tgtypes.photo_size import PhotoSize
 
 
 class Message:
-    def __init__(self, text: str, *_: Any) -> None:
+    def __init__(self, text: str, **kwargs: Any) -> None:
         self._text = text
 
     def text(self) -> str:
