@@ -1,4 +1,5 @@
-from bot.inner_bot import Bot, EnvironmentToken
+from bot.inner_bot import Bot
+from bot.token import DotenvToken
 from event_loop import EventLoop
 from arguments.message.text import PlainText
 from methods.get_me import GetMe
@@ -7,13 +8,14 @@ from methods.get_user_profile_photos import (
 )
 from methods.get_updates import GetUpdates
 from methods.send_message import SendMessage
-from update.handlers import Handlers, MessageHandler
+from update.events import Events, OnMessage
 
 from tgtypes.message.message import Message
 from polling import Polling
+from dotenv.main import DotEnv
 
 
-class PrintMessageText(MessageHandler):
+class PrintMessageText(OnMessage):
     def handle(self, bot: Bot, message: Message) -> None:
         print(message.text())
         bot.call_method(
@@ -25,17 +27,18 @@ class PrintMessageText(MessageHandler):
 
 
 if __name__ == "__main__":
-    Polling(
-        Bot(EnvironmentToken("BOT_TOKEN")),
-        EventLoop(
-            Handlers(
-                message_handlers=[
-                    PrintMessageText(),
-                    PrintMessageText(),
-                ]
-            )
-        ),
-    ).start()
+    Bot(DotenvToken("BOT_TOKEN", DotEnv(".env"))).start(
+        Polling(
+            EventLoop(
+                Events(
+                    on_message=[
+                        PrintMessageText(),
+                        PrintMessageText(),
+                    ]
+                )
+            ),
+        )
+    )
 
 # GetMe(bot).call()
 # print(GetUserProfilePhotos(bot, user_id=742596099).call())

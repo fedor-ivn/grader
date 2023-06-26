@@ -1,6 +1,7 @@
+from abc import ABC, abstractmethod
+from state import State
 from time import sleep
 from arguments.argument import MethodArgument
-from arguments.empty import EmptyArgument
 from arguments.inline import InlineArgument
 from arguments.merged import MergedArgument
 from bot.inner_bot import Bot
@@ -11,39 +12,36 @@ from arguments.get_updates.get_updates import (
 from methods.get_updates import GetUpdates
 
 
-class Polling:
+class Polling(State):
     def __init__(
         self,
-        bot: Bot,
         event_loop: EventLoop,
         arguments: GetUpdatesArguments = GetUpdatesArguments(),
         poll_interval_ms: int = 25,
     ) -> None:
-        self._bot = bot
         self._event_loop = event_loop
         self._arguments = arguments
         self._poll_interval = poll_interval_ms
-        self.updated_offset: MethodArgument = (
-            EmptyArgument()
-        )
 
-    def start(self) -> None:
+    def start(self, bot: Bot) -> None:
+        current_offset = 0
+
         while True:
             try:
-                updates = self._bot.call_method(
+                updates = bot.call_method(
                     GetUpdates(
-                        MergedArgument(
-                            self._arguments,
-                            self.updated_offset,
+                        self._arguments.with_offset(
+                            current_offset
                         )
                     )
                 )
                 self._event_loop.handle_updates(
-                    self._bot, updates
+                    bot, updates
                 )
-                self.updated_offset = (
-                    updates.updated_offset()
+                current_offset = updates.update_offset(
+                    current_offset
                 )
+                # is it okay to divide by 1000 inplace?
                 sleep(self._poll_interval / 1000)
             except KeyboardInterrupt:
                 break

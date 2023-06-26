@@ -1,5 +1,7 @@
 import pprint
-from arguments.empty import EmptyArgument
+from arguments.get_updates.get_updates import (
+    GetUpdatesArguments,
+)
 from methods.method import Method
 from content import JsonRequestContent
 from methods.raw_method import RawMethod
@@ -18,7 +20,7 @@ from arguments.argument import (
 class GetUpdates(Method[Updates]):
     def __init__(
         self,
-        arguments: MethodArgument = EmptyArgument(),
+        arguments: GetUpdatesArguments = GetUpdatesArguments(),
     ) -> None:
         self._arguments = arguments
 

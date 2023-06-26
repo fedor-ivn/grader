@@ -3,30 +3,38 @@ import json
 from typing import Any, Generic, TypeVar
 
 
-T = TypeVar("T")
-
-
-class RequestContent(ABC, Generic[T]):
+class RequestContent(ABC):
     @abstractmethod
-    def get_request_kwargs(self) -> T:
+    def data(self) -> bytes:
+        ...
+
+    @abstractmethod
+    def content_type(self) -> str:
         ...
 
 
-class JsonRequestContent(
-    RequestContent[dict[str, str | dict[str, str]]]
-):
+class JsonRequestContent(RequestContent):
     def __init__(self, content: dict[str, Any]) -> None:
         self._content = content
 
-    def get_request_kwargs(
-        self,
-    ) -> dict[str, str | dict[str, str]]:
-        return {
-            "data": json.dumps(self._content),
-            "headers": {"Content-Type": "application/json"},
-        }
+    # def get_request_kwargs(
+    #     self,
+    # ) -> dict[str, str | dict[str, str]]:
+    #     return {
+    #         "data": json.dumps(self._content),
+    #         "headers": {"Content-Type": "application/json"},
+    #     }
+
+    def data(self) -> bytes:
+        return json.dumps(self._content).encode("utf-8")
+
+    def content_type(self) -> str:
+        return "application/json"
 
 
-class EmptyRequestContent(RequestContent[dict[Any, Any]]):
-    def get_request_kwargs(self) -> dict[Any, Any]:
-        return {}
+class EmptyRequestContent(RequestContent):
+    def data(self) -> bytes:
+        return b""
+
+    def content_type(self) -> str:
+        return "application/json"

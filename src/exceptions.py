@@ -20,3 +20,8 @@ class ApiMethodException(Exception):
         self._description = description
         self._error_code = error_code
         super().__init__(self._description)
+
+
+class NoUpdatesException(Exception):
+    def __init__(self) -> None:
+        super().__init__("This time there are no updates")

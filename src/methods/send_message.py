@@ -1,9 +1,17 @@
 from arguments.argument import (
     MethodArgument,
 )
-from arguments.empty import EmptyArgument
 from arguments.inline import InlineArgument
+from arguments.message.config import MessageConfig
+from arguments.message.replying import (
+    AbstractReplyingMessage,
+    NoReplyingMessage,
+)
 from arguments.message.text import MessageText
+from arguments.message.thread import (
+    AbstractThreadId,
+    NoThreadId,
+)
 from arguments.method_arguments import (
     MethodArguments,
 )
@@ -21,19 +29,23 @@ class SendMessage(Method[Message]):
         self,
         chat_id: int,
         text: MessageText,
-        message_thread_id: MethodArgument = EmptyArgument(),
+        message_thread_id: AbstractThreadId = NoThreadId(),
         # entities: list[MessageEntity]=[],
-        config: MethodArgument = EmptyArgument(),
-        reply: MethodArgument = EmptyArgument(),
-        reply_markup: MethodArgument = EmptyArgument(),
+        disable_web_page_preview: bool = False,
+        config: MessageConfig = MessageConfig(),
+        reply: AbstractReplyingMessage = NoReplyingMessage(),
+        # reply_markup: MethodArgument = NoMarkup(),
     ) -> None:
         self._chat_id = chat_id
         self._message_thread_id = message_thread_id
         self._text = text
         # self._entities = entities
+        self._disable_web_page_preview = (
+            disable_web_page_preview
+        )
         self._config = config
         self._reply = reply
-        self.reply_markup = reply_markup
+        # self.reply_markup = reply_markup
 
     def call(self, bot: URI) -> Message:
         print(self._chat_id)
@@ -67,9 +79,14 @@ class SendMessage(Method[Message]):
                             ),
                             self._message_thread_id,
                             self._text,
+                            # self._entities,
+                            InlineArgument(
+                                "disable_web_page_preview",
+                                self._disable_web_page_preview,
+                            ),
                             self._config,
                             self._reply,
-                            self.reply_markup,
+                            # self.reply_markup,
                         ]
                     ).to_dict()
                 ),

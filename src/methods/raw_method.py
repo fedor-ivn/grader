@@ -14,22 +14,23 @@ from methods.method import Method
 from uri.method_uri import MethodURI
 from uri.uri import URI
 
-T = TypeVar("T")
 
-
-class RawMethod(Method[Any], Generic[T]):
+class RawMethod(Method[Any]):
     def __init__(
         self,
-        content: RequestContent[T],
+        content: RequestContent,
     ) -> None:
         self._content = content
 
     def call(self, method_uri: URI) -> Any:
         # print(method_uri.construct_uri())
         try:
-            response = requests.post(  # type: ignore
+            response = requests.post(
                 method_uri.construct_uri(),
-                **self._content.get_request_kwargs(),
+                data=self._content.data(),
+                headers={
+                    "Content-Type": self._content.content_type()
+                },
             )
         except KeyError:
             raise NetworkException
@@ -50,8 +51,8 @@ class RawMethod(Method[Any], Generic[T]):
                 "error_code": int(error_code),
             }:
                 raise ApiMethodException(
-                    json_response["description"],
-                    json_response["error_code"],
+                    description,
+                    error_code,
                 )
             case _:
                 raise UnexpectedResponseException

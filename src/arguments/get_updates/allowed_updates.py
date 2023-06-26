@@ -5,7 +5,18 @@ from arguments.inline import InlineArgument
 from typing import Any
 
 
-class AllowedUpdatesArgument(MethodArgument):
+class AbstractAllowedUpdates(MethodArgument):
+    pass
+
+
+class PreviousAllowedUpdates(AbstractAllowedUpdates):
+    def to_dict(self) -> dict[str, Any]:
+        return InlineArgument(
+            "allowed_updates", []
+        ).to_dict()
+
+
+class AllowedUpdates(AbstractAllowedUpdates):
     def __init__(
         self,
         message: bool = True,

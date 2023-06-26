@@ -4,7 +4,16 @@ from arguments.argument import (
 )
 
 
-class ReplyingMessage(MethodArgument):
+class AbstractReplyingMessage(MethodArgument):
+    pass
+
+
+class NoReplyingMessage(AbstractReplyingMessage):
+    def to_dict(self) -> dict[str, Any]:
+        return {}
+
+
+class ReplyingMessage(AbstractReplyingMessage):
     def __init__(
         self,
         reply_to_message_id: int,
@@ -15,7 +24,7 @@ class ReplyingMessage(MethodArgument):
             allow_sending_without_reply
         )
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, int | bool]:
         return {
             "reply_to_message_id": self.reply_to_message_id,
             "allow_sending_without_reply": self.allow_sending_without_reply,

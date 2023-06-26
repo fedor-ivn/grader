@@ -4,7 +4,7 @@ from arguments.inline import InlineArgument
 from bot.inner_bot import Bot
 from tgtypes.message.message import Message
 
-from update.handlers import Handlers
+from update.events import Events
 
 
 class Update(ABC):
@@ -12,11 +12,11 @@ class Update(ABC):
         self._id = update_id
 
     @abstractmethod
-    def updated_offset(self) -> MethodArgument:
+    def id(self) -> int:
         ...
 
     @abstractmethod
-    def handle(self, bot: Bot, handlers: Handlers) -> None:
+    def handle(self, bot: Bot, handlers: Events) -> None:
         ...
 
 
@@ -27,8 +27,8 @@ class MessageUpdate(Update):
         super().__init__(update_id)
         self._message = message
 
-    def updated_offset(self) -> MethodArgument:
-        return InlineArgument("offset", self._id + 1)
+    def id(self) -> int:
+        return self._id
 
-    def handle(self, bot: Bot, handlers: Handlers) -> None:
+    def handle(self, bot: Bot, handlers: Events) -> None:
         handlers.handle_message(bot, self._message)

@@ -5,17 +5,17 @@ from tgtypes.message.message import Message
 # from tgtypes.user.message import Message
 
 
-class MessageHandler(ABC):
+class OnMessage(ABC):
     @abstractmethod
     def handle(self, bot: Bot, message: Message) -> None:
         ...
 
 
-class Handlers:
+class Events:
     def __init__(
-        self, message_handlers: list[MessageHandler] = []
+        self, on_message: list[OnMessage] = []
     ) -> None:
-        self._message_handlers = message_handlers
+        self._message_handlers = on_message
 
     def handle_message(
         self, bot: Bot, message: Message

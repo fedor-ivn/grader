@@ -1,20 +1,21 @@
+from typing import Sequence
 from arguments.argument import MethodArgument
-from arguments.empty import EmptyArgument
 from bot.inner_bot import Bot
-from update.handlers import Handlers
+from exceptions import NoUpdatesException
+from update.events import Events
 from update.update import Update
 
 
-class Updates(Update):
-    def __init__(self, updates: list[Update]) -> None:
+class Updates:
+    def __init__(self, updates: Sequence[Update]) -> None:
         self._updates = updates
 
-    def handle(self, bot: Bot, handlers: Handlers) -> None:
+    def handle(self, bot: Bot, handlers: Events) -> None:
         for update in self._updates:
             update.handle(bot, handlers)
 
-    def updated_offset(self) -> MethodArgument:
-        if not self._updates:
-            return EmptyArgument()
+    def update_offset(self, old: int) -> int:
+        if len(self._updates) == 0:
+            return old
         last_update = self._updates[-1]
-        return last_update.updated_offset()
+        return last_update.id() + 1
