@@ -11,7 +11,6 @@ from exceptions import (
 )
 
 from methods.method import Method
-from uri.method_uri import MethodURI
 from uri.uri import URI
 
 

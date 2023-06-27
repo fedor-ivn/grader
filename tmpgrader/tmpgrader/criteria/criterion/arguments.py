@@ -1,6 +1,6 @@
-from criteria.criterion.criterion import Criterion
-from ibash.session import IBashSession
-from mock_executable.mock_executable import MockExecutable
+from tmpgrader.criteria.criterion.criterion import Criterion
+from tmpgrader.ibash.session import IBashSession
+from tmpgrader.mock_executable.mock_executable import MockExecutable
 
 
 class ArgumentsCriterion(Criterion):

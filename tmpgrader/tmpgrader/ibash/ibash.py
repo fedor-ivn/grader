@@ -1,7 +1,7 @@
 from subprocess import Popen
-from pseudo_terminal.simple import SimplePseudoTerminal
-from pseudo_terminal.no_echo import NoEchoPseudoTerminal
-from ibash.session import IBashSession
+from tmpgrader.pseudo_terminal.simple import SimplePseudoTerminal
+from tmpgrader.pseudo_terminal.no_echo import NoEchoPseudoTerminal
+from tmpgrader.ibash.session import IBashSession
 
 
 class IBash:

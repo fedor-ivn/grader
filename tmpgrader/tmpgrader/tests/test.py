@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ibash.i_bash import IBash
+from tmpgrader.ibash.i_bash import IBash
 
 
 class Test(ABC):

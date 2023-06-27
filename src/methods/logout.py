@@ -5,15 +5,13 @@ from tgtypes.user.me import Me
 from bot.inner_bot import Bot
 from methods.raw_method import RawMethod
 from uri.uri import URI
+from tgtypes.bool_response import BoolResponse
 
 
-class LogOut(Method[Me]):
-    def __init__(self, bot: Bot) -> None:
-        self._bot = bot
-
-    def call(self, bot: URI) -> Me:
-        return Me(
-            **RawMethod(
+class LogOut(Method[BoolResponse]):
+    def call(self, bot: URI) -> BoolResponse:
+        return BoolResponse(
+            response=RawMethod(
                 EmptyRequestContent(),
             ).call(MethodURI("logout", bot))
         )

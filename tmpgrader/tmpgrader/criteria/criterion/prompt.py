@@ -1,5 +1,5 @@
-from criterion import Criterion
-from ibash.session import IBashSession
+from tmpgrader.criterion import Criterion
+from tmpgrader.ibash.session import IBashSession
 
 
 class PromptCriterion(Criterion):

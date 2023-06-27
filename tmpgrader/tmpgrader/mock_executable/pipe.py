@@ -1,4 +1,4 @@
-from mock_executable.pipe_session import PipeSession
+from tmpgrader.mock_executable.pipe_session import PipeSession
 import os
 from threading import Thread
 import errno

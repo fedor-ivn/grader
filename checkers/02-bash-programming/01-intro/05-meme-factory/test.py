@@ -1,4 +1,4 @@
-from tmp_grader.tests.meme_factory import MemeFactoryTest
-from tmp_grader.ibash.ibash import IBash
+from tmpgrader.tests.meme_factory import MemeFactoryTest
+from tmpgrader.ibash.ibash import IBash
 
 MemeFactoryTest().test(IBash("solution.sh"))
