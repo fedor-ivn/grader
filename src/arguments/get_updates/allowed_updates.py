@@ -9,7 +9,7 @@ class AbstractAllowedUpdates(MethodArgument):
     pass
 
 
-class PreviousAllowedUpdates(AbstractAllowedUpdates):
+class DefaultAllowedUpdates(AbstractAllowedUpdates):
     def to_dict(self) -> dict[str, Any]:
         return InlineArgument(
             "allowed_updates", []

@@ -24,7 +24,15 @@ class Bot(URI):
         return f"{self._api_uri.construct_uri()}bot{self._token.token()}/"
 
     def call_method(self, method: Method[T]) -> T:
+        """
+        todo: need to clarify if we can do such call chains
+            bot -> state -> bot
+        """
         return method.call(self)
 
     def start(self, state: State) -> None:
+        """
+        todo: need to clarify if we can do such call chains
+            bot -> state -> bot
+        """
         state.start(self)

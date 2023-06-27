@@ -8,9 +8,6 @@ from update.events import Events
 
 
 class Update(ABC):
-    def __init__(self, update_id: int) -> None:
-        self._id = update_id
-
     @abstractmethod
     def id(self) -> int:
         ...
@@ -24,7 +21,7 @@ class MessageUpdate(Update):
     def __init__(
         self, update_id: int, message: Message
     ) -> None:
-        super().__init__(update_id)
+        self._id = update_id
         self._message = message
 
     def id(self) -> int:

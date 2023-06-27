@@ -25,3 +25,8 @@ class ApiMethodException(Exception):
 class NoUpdatesException(Exception):
     def __init__(self) -> None:
         super().__init__("This time there are no updates")
+
+
+class TokenNotFoundError(Exception):
+    def __init__(self, description: str) -> None:
+        super().__init__(description)

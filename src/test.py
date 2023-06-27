@@ -1,3 +1,4 @@
+from arguments.message.destination import Destination
 from bot.inner_bot import Bot
 from bot.token import DotenvToken
 from event_loop import EventLoop
@@ -20,7 +21,7 @@ class PrintMessageText(OnMessage):
         print(message.text())
         bot.call_method(
             SendMessage(
-                chat_id=742596099,
+                Destination(chat_id=742596099),
                 text=PlainText(message.text()),
             )
         )

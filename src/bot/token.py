@@ -4,6 +4,8 @@ import warnings
 
 from dotenv.main import DotEnv
 
+from exceptions import TokenNotFoundError
+
 
 class Token(ABC):
     @abstractmethod
@@ -34,7 +36,7 @@ class EnvironmentToken(Token):
         try:
             return os.environ[self._env_var]
         except KeyError:
-            raise KeyError(
+            raise TokenNotFoundError(
                 f"Environment variable {self._env_var} is not set."
             )
 
@@ -51,6 +53,6 @@ class DotenvToken(Token):
             dotenv_dict = self._dotenv.dict()
             return dotenv_dict[self._env_var]  # type: ignore
         except KeyError:
-            raise KeyError(
+            raise TokenNotFoundError(
                 f"Environment variable {self._env_var} is not found in dotenv."
             )

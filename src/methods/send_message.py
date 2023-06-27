@@ -1,8 +1,10 @@
+from typing import Any
 from arguments.argument import (
     MethodArgument,
 )
 from arguments.inline import InlineArgument
 from arguments.message.config import MessageConfig
+from arguments.message.destination import Destination
 from arguments.message.replying import (
     AbstractReplyingMessage,
     NoReplyingMessage,
@@ -27,17 +29,15 @@ from uri.uri import URI
 class SendMessage(Method[Message]):
     def __init__(
         self,
-        chat_id: int,
+        destination: Destination,
         text: MessageText,
-        message_thread_id: AbstractThreadId = NoThreadId(),
         # entities: list[MessageEntity]=[],
         disable_web_page_preview: bool = False,
         config: MessageConfig = MessageConfig(),
         reply: AbstractReplyingMessage = NoReplyingMessage(),
         # reply_markup: MethodArgument = NoMarkup(),
     ) -> None:
-        self._chat_id = chat_id
-        self._message_thread_id = message_thread_id
+        self._destination = destination
         self._text = text
         # self._entities = entities
         self._disable_web_page_preview = (
@@ -48,7 +48,6 @@ class SendMessage(Method[Message]):
         # self.reply_markup = reply_markup
 
     def call(self, bot: URI) -> Message:
-        print(self._chat_id)
         # instance = from_dict(
         #     data_class=Message,
         #     data=RawMethod(
@@ -74,10 +73,7 @@ class SendMessage(Method[Message]):
                 JsonRequestContent(
                     MethodArguments(
                         [
-                            InlineArgument(
-                                "chat_id", self._chat_id
-                            ),
-                            self._message_thread_id,
+                            self._destination,
                             self._text,
                             # self._entities,
                             InlineArgument(

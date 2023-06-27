@@ -3,7 +3,7 @@ from arguments.argument import (
 )
 from arguments.get_updates.allowed_updates import (
     AbstractAllowedUpdates,
-    PreviousAllowedUpdates,
+    DefaultAllowedUpdates,
 )
 from arguments.method_arguments import (
     MethodArguments,
@@ -18,7 +18,7 @@ class GetUpdatesArguments(MethodArgument):
         offset: int = -1,
         limit: int = 100,
         timeout: int = 0,
-        allowed_updates: AbstractAllowedUpdates = PreviousAllowedUpdates(),
+        allowed_updates: AbstractAllowedUpdates = DefaultAllowedUpdates(),
     ) -> None:
         self._offset = offset
         self._limit = limit
