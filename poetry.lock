@@ -120,6 +120,19 @@ files = [
 ]
 
 [[package]]
+name = "logger"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = "^3.11"
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "logger"
+
+[[package]]
 name = "more-itertools"
 version = "9.1.0"
 description = "More routines for operating on iterables, beyond itertools"
@@ -286,4 +299,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "fb36687f9654fd8601bf4153deb5303697483cef639af825d04419151264577a"
+content-hash = "5e025dac40e06d1ab248d99bf24bb546445ba7e1d60a7a4a291bebec55d4caa5"

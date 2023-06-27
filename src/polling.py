@@ -11,6 +11,8 @@ from arguments.merged import MergedArgument
 from bot.inner_bot import Bot
 from event_loop import EventLoop
 from methods.get_updates import GetUpdates
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
 
 
 class PollingConfig:
@@ -49,10 +51,12 @@ class Polling(State):
         event_loop: EventLoop,
         config: PollingConfig = PollingConfig(),
         poll_interval_ms: int = 25,
+        log: AbstractLog = NoLog(),
     ) -> None:
         self._event_loop = event_loop
         self._config = config
         self._poll_interval = poll_interval_ms
+        self.log = log
 
     def start(self, bot: Bot) -> None:
         current_offset = 0

@@ -3,13 +3,19 @@ from arguments.argument import (
 )
 from typing import Any
 
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
+
 
 class MessageText(MethodArgument):
     pass
 
 
 class PlainText(MessageText):
-    def __init__(self, text: str) -> None:
+    def __init__(
+        self,
+        text: str,
+    ) -> None:
         self.text = text
 
     def to_dict(self) -> dict[str, Any]:
@@ -17,7 +23,10 @@ class PlainText(MessageText):
 
 
 class MarkdownText(MessageText):
-    def __init__(self, text: str) -> None:
+    def __init__(
+        self,
+        text: str,
+    ) -> None:
         self.text = text
 
     def to_dict(self) -> dict[str, Any]:
@@ -25,7 +34,10 @@ class MarkdownText(MessageText):
 
 
 class MarkdownV2Text(MessageText):
-    def __init__(self, text: str) -> None:
+    def __init__(
+        self,
+        text: str,
+    ) -> None:
         self.text = text
 
     def to_dict(self) -> dict[str, Any]:
@@ -36,7 +48,10 @@ class MarkdownV2Text(MessageText):
 
 
 class HTMLText(MessageText):
-    def __init__(self, text: str) -> None:
+    def __init__(
+        self,
+        text: str,
+    ) -> None:
         self.text = text
 
     def to_dict(self) -> dict[str, Any]:

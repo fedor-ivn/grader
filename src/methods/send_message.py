@@ -24,6 +24,8 @@ from methods.raw_method import RawMethod
 from tgtypes.message.message import Message
 from uri.method_uri import MethodURI
 from uri.uri import URI
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
 
 
 class SendMessage(Method[Message]):
@@ -36,6 +38,7 @@ class SendMessage(Method[Message]):
         config: MessageConfig = MessageConfig(),
         reply: AbstractReplyingMessage = NoReplyingMessage(),
         # reply_markup: MethodArgument = NoMarkup(),
+        log: AbstractLog = NoLog(),
     ) -> None:
         self._destination = destination
         self._text = text
@@ -46,6 +49,7 @@ class SendMessage(Method[Message]):
         self._config = config
         self._reply = reply
         # self.reply_markup = reply_markup
+        self.log = log
 
     def call(self, bot: URI) -> Message:
         # instance = from_dict(
@@ -88,4 +92,5 @@ class SendMessage(Method[Message]):
                 ),
             ).call(MethodURI("sendMessage", bot)),
         )
+        self.log.debug(f"Message sent: {instance}")
         return instance  # type: ignore

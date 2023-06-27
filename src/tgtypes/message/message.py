@@ -1,13 +1,32 @@
-from dataclasses import dataclass
-from typing import Any
+from abc import ABC
+from dataclasses import dataclass, field
+
+from tgtypes.message.message_entity import MessageEntity
 
 
-class Message:
-    def __init__(self, text: str, **kwargs: Any) -> None:
-        self._text = text
+@dataclass
+class Chat:
+    id: int
 
-    def text(self) -> str:
-        return self._text
+
+@dataclass
+class Message(ABC):
+    id: int
+    date: int
+    chat: Chat
+
+
+@dataclass
+class Text:
+    value: str
+    entities: list[MessageEntity] = field(
+        default_factory=list
+    )
+
+
+@dataclass
+class TextMessage(Message):
+    text: Text
 
 
 # todo: дамир, ну и нахуя ты это написал?

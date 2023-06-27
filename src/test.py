@@ -1,3 +1,4 @@
+import logging
 from arguments.message.destination import Destination
 from bot.inner_bot import Bot
 from bot.token import DotenvToken
@@ -11,23 +12,32 @@ from methods.get_updates import GetUpdates
 from methods.send_message import SendMessage
 from update.events import Events, OnMessage
 
-from tgtypes.message.message import Message
+from tgtypes.message.message import Message, TextMessage
 from polling import Polling
 from dotenv.main import DotEnv
 
+from logger.log import LogConfig
+
 
 class PrintMessageText(OnMessage):
-    def handle(self, bot: Bot, message: Message) -> None:
-        print(message.text())
+    def handle(
+        self, bot: Bot, message: TextMessage
+    ) -> None:
+        print(message.text.value)
         bot.call_method(
             SendMessage(
                 Destination(chat_id=742596099),
-                text=PlainText(message.text()),
+                text=PlainText(message.text.value),
             )
         )
 
 
 if __name__ == "__main__":
+    log = LogConfig(
+        level=logging.INFO,
+        format="%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s",
+        datefmt="%H:%M:%S",
+    ).configure()
     Bot(DotenvToken("BOT_TOKEN", DotEnv(".env"))).start(
         Polling(
             EventLoop(
@@ -35,9 +45,12 @@ if __name__ == "__main__":
                     on_message=[
                         PrintMessageText(),
                         PrintMessageText(),
-                    ]
-                )
+                    ],
+                    log=log,
+                ),
+                log=log,
             ),
+            log=log,
         )
     )
 

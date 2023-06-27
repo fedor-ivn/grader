@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import json
 from typing import Any, Generic, TypeVar
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
 
 
 class RequestContent(ABC):
@@ -14,8 +16,13 @@ class RequestContent(ABC):
 
 
 class JsonRequestContent(RequestContent):
-    def __init__(self, content: dict[str, Any]) -> None:
+    def __init__(
+        self,
+        content: dict[str, Any],
+        log: AbstractLog = NoLog(),
+    ) -> None:
         self._content = content
+        self.log = log
 
     # def get_request_kwargs(
     #     self,
@@ -26,9 +33,11 @@ class JsonRequestContent(RequestContent):
     #     }
 
     def data(self) -> bytes:
+        self.log.info("JsonRequestContent.data()")
         return json.dumps(self._content).encode("utf-8")
 
     def content_type(self) -> str:
+        self.log.info("JsonRequestContent.content_type()")
         return "application/json"
 
 

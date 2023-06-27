@@ -11,6 +11,9 @@ from arguments.method_arguments import (
 from arguments.inline import InlineArgument
 from typing import Any
 
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
+
 
 class GetUpdatesArguments(MethodArgument):
     def __init__(
@@ -19,15 +22,18 @@ class GetUpdatesArguments(MethodArgument):
         limit: int = 100,
         timeout: int = 0,
         allowed_updates: AbstractAllowedUpdates = DefaultAllowedUpdates(),
+        log: AbstractLog = NoLog(),
     ) -> None:
         self._offset = offset
         self._limit = limit
         self._timeout = timeout
         self._allowed_updates = allowed_updates
+        self.log = log
 
     def with_offset(
         self, offset: int
     ) -> "GetUpdatesArguments":
+        self.log.debug(f"Setting offset to {offset}")
         return GetUpdatesArguments(
             offset,
             self._limit,
@@ -36,6 +42,9 @@ class GetUpdatesArguments(MethodArgument):
         )
 
     def to_dict(self) -> dict[str, Any]:
+        self.log.debug(
+            "Converting GetUpdatesArguments to dict"
+        )
         return MethodArguments(
             [
                 InlineArgument("offset", self._offset),

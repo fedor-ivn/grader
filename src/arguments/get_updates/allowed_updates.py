@@ -4,6 +4,9 @@ from arguments.argument import (
 from arguments.inline import InlineArgument
 from typing import Any
 
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
+
 
 class AbstractAllowedUpdates(MethodArgument):
     pass
@@ -22,12 +25,15 @@ class AllowedUpdates(AbstractAllowedUpdates):
         message: bool = True,
         edited_channel_post: bool = True,
         callback_query: bool = True,
+        log: AbstractLog = NoLog(),
     ) -> None:
         self._message = message
         self._edited_channel_post = edited_channel_post
         self._callback_query = callback_query
+        self.log = log
 
     def to_dict(self) -> dict[str, Any]:
+        self.log.debug("AllowedUpdates.to_dict()")
         return InlineArgument(
             "allowed_updates",
             [

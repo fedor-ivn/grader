@@ -1,5 +1,8 @@
 from arguments.argument import MethodArgument
 
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
+
 
 class AbstractThreadId(MethodArgument):
     pass
@@ -11,10 +14,14 @@ class NoThreadId(AbstractThreadId):
 
 
 class ThreadId(AbstractThreadId):
-    def __init__(self, thread_id: int) -> None:
+    def __init__(
+        self, thread_id: int, log: AbstractLog = NoLog()
+    ) -> None:
         self._thread_id = thread_id
+        self.log = log
 
     def to_dict(self) -> dict[str, int]:
+        self.log.debug(f"ThreadId: {self._thread_id}")
         return {
             "thread_id": self._thread_id,
         }

@@ -1,21 +1,25 @@
 from dataclasses import dataclass
 import logging
+from abc import ABC, abstractmethod
 
-class AbstractLog:
-    def __init__(self) -> None:
-        pass 
 
+class AbstractLog(ABC):
+    @abstractmethod
     def debug(self, message: str) -> None:
-        pass
+        ...
 
+    @abstractmethod
     def info(self, message: str) -> None:
-        pass
+        ...
 
+    @abstractmethod
     def warning(self, message: str) -> None:
-        pass
+        ...
 
+    @abstractmethod
     def error(self, message: str) -> None:
-        pass
-    
+        ...
+
+    @abstractmethod
     def critical(self, message: str) -> None:
-        pass
+        ...

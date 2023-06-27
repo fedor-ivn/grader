@@ -1,3 +1,7 @@
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
+
+
 class NetworkException(Exception):
     def __init__(self) -> None:
         super().__init__("Service is not reachable")

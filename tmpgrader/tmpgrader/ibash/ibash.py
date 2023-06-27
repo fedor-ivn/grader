@@ -1,6 +1,10 @@
 from subprocess import Popen
-from tmpgrader.pseudo_terminal.simple import SimplePseudoTerminal
-from tmpgrader.pseudo_terminal.no_echo import NoEchoPseudoTerminal
+from tmpgrader.pseudo_terminal.simple import (
+    SimplePseudoTerminal,
+)
+from tmpgrader.pseudo_terminal.no_echo import (
+    NoEchoPseudoTerminal,
+)
 from tmpgrader.ibash.session import IBashSession
 
 

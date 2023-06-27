@@ -21,6 +21,8 @@ from typing import Any
 from arguments.argument import (
     MethodArgument,
 )
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
 
 
 class GetUpdates(Method[Updates]):
@@ -30,13 +32,16 @@ class GetUpdates(Method[Updates]):
         limit: int = 100,
         timeout: int = 0,
         allowed_updates: AbstractAllowedUpdates = DefaultAllowedUpdates(),
+        log: AbstractLog = NoLog(),
     ) -> None:
         self._offset = offset
         self._limit = limit
         self._timeout = timeout
         self._allowed_updates = allowed_updates
+        self.log = log
 
     def call(self, bot: URI) -> Updates:
+        self.log.debug("GetUpdates.call")
         return RawUpdates(
             RawMethod(
                 JsonRequestContent(

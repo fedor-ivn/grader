@@ -1,9 +1,7 @@
 from logger.abstract_log import AbstractLog
 
-class Log(AbstractLog):
-    def __init__(self) -> None:
-        pass 
 
+class NoLog(AbstractLog):
     def debug(self, message: str) -> None:
         pass
 
@@ -15,6 +13,6 @@ class Log(AbstractLog):
 
     def error(self, message: str) -> None:
         pass
-    
+
     def critical(self, message: str) -> None:
         pass
