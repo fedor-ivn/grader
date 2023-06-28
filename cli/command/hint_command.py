@@ -4,7 +4,6 @@ from cli.testing_system.testing_system import TestingSystem
 
 
 class HintCommand(UserCommand):
-
     def __init__(self, task: Task):
         self.task = task
 

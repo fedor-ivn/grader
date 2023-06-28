@@ -49,7 +49,7 @@ class SendMessage(Method[Message]):
         self._config = config
         self._reply = reply
         # self.reply_markup = reply_markup
-        self.log = log
+        self._log = log
 
     def call(self, bot: URI) -> Message:
         # instance = from_dict(
@@ -92,5 +92,5 @@ class SendMessage(Method[Message]):
                 ),
             ).call(MethodURI("sendMessage", bot)),
         )
-        self.log.debug(f"Message sent: {instance}")
+        self._log.debug(f"Message sent: {instance}")
         return instance  # type: ignore

@@ -16,10 +16,10 @@ class InlineArgument(MethodArgument):
     ) -> None:
         self._key = key
         self._value = value
-        self.log = log
+        self._log = log
 
     def to_dict(self) -> dict[str, Any]:
-        self.log.debug(
+        self._log.debug(
             f"InlineArgument: {self._key}={self._value}"
         )
         return {self._key: self._value}

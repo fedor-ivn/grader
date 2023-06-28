@@ -13,7 +13,7 @@ from content import JsonRequestContent
 from methods.raw_method import RawMethod
 from tgtypes.message.message import Message
 from update.raw_updates import RawUpdates
-from update.update import MessageUpdate, Update
+from update.update import Update
 from update.updates import Updates
 from uri.method_uri import MethodURI
 from uri.uri import URI
@@ -38,10 +38,10 @@ class GetUpdates(Method[Updates]):
         self._limit = limit
         self._timeout = timeout
         self._allowed_updates = allowed_updates
-        self.log = log
+        self._log = log
 
     def call(self, bot: URI) -> Updates:
-        self.log.debug("GetUpdates.call")
+        self._log.debug("GetUpdates.call")
         return RawUpdates(
             RawMethod(
                 JsonRequestContent(

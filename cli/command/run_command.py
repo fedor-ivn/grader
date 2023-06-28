@@ -3,7 +3,6 @@ from cli.command.user_command import UserCommand
 
 
 class RunCommand(UserCommand):
-
     def __init__(self, task: Task, solution: Solution):
         self.task = task
         self.solution = solution

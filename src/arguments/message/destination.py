@@ -20,10 +20,10 @@ class Destination(MethodArgument):
     ) -> None:
         self._chat_id = chat_id
         self._message_thread_id = message_thread_id
-        self.log = log
+        self._log = log
 
     def to_dict(self) -> dict[str, Any]:
-        self.log.info("Destination.to_dict()")
+        self._log.info("Destination.to_dict()")
         return MethodArguments(
             [
                 InlineArgument("chat_id", self._chat_id),

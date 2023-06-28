@@ -15,10 +15,10 @@ class MethodArguments(MethodArgument):
         log: AbstractLog = NoLog(),
     ) -> None:
         self.methods = methods
-        self.log = log
+        self._log = log
 
     def to_dict(self) -> dict[str, Any]:
-        self.log.debug("MethodArguments.to_dict()")
+        self._log.debug("MethodArguments.to_dict()")
         return dict(
             flatten(
                 [

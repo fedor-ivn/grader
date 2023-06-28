@@ -18,10 +18,10 @@ class ThreadId(AbstractThreadId):
         self, thread_id: int, log: AbstractLog = NoLog()
     ) -> None:
         self._thread_id = thread_id
-        self.log = log
+        self._log = log
 
     def to_dict(self) -> dict[str, int]:
-        self.log.debug(f"ThreadId: {self._thread_id}")
+        self._log.debug(f"ThreadId: {self._thread_id}")
         return {
             "thread_id": self._thread_id,
         }

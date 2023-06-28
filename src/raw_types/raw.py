@@ -14,7 +14,7 @@ class RawType(ABC, Generic[T]):
         log: AbstractLog = NoLog(),
     ) -> None:
         self._raw = raw_object
-        self.log = log
+        self._log = log
 
     @abstractmethod
     def parse(self) -> T:

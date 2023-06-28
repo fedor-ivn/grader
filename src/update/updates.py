@@ -15,15 +15,15 @@ class Updates:
         log: AbstractLog = NoLog(),
     ) -> None:
         self._updates = updates
-        self.log = log
+        self._log = log
 
     def handle(self, bot: Bot, handlers: Events) -> None:
-        self.log.info("Handling updates")
+        self._log.info("Handling updates")
         for update in self._updates:
             update.handle(bot, handlers)
 
     def update_offset(self, old: int) -> int:
-        self.log.info("Updating offset")
+        self._log.info("Updating offset")
         if len(self._updates) == 0:
             return old
         last_update = self._updates[-1]

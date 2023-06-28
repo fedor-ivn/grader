@@ -23,11 +23,11 @@ class RawMethod(Method[Any]):
         log: AbstractLog = NoLog(),
     ) -> None:
         self._content = content
-        self.log = log
+        self._log = log
 
     def call(self, method_uri: URI) -> Any:
         # print(method_uri.construct_uri())
-        self.log.info(
+        self._log.info(
             f"Calling {method_uri.construct_uri()}"
         )
         try:
@@ -38,11 +38,11 @@ class RawMethod(Method[Any]):
                     "Content-Type": self._content.content_type()
                 },
             )
-            self.log.info(
+            self._log.info(
                 f"Response status code: {response.status_code}"
             )
         except KeyError:
-            self.log.error("Network error")
+            self._log.error("Network error")
             raise NetworkException
 
         raw_json_response = response.text
@@ -54,18 +54,18 @@ class RawMethod(Method[Any]):
 
         match json_response:
             case {"ok": True, "result": result}:
-                self.log.info("Response is ok")
+                self._log.info("Response is ok")
                 return result
             case {
                 "ok": False,
                 "description": str(description),
                 "error_code": int(error_code),
             }:
-                self.log.error("Response is not ok")
+                self._log.error("Response is not ok")
                 raise ApiMethodException(
                     description,
                     error_code,
                 )
             case _:
-                self.log.error("Unexpected response")
+                self._log.error("Unexpected response")
                 raise UnexpectedResponseException

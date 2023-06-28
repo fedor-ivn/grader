@@ -27,10 +27,10 @@ class ReplyingMessage(AbstractReplyingMessage):
         self.allow_sending_without_reply = (
             allow_sending_without_reply
         )
-        self.log = log
+        self._log = log
 
     def to_dict(self) -> dict[str, int | bool]:
-        self.log.debug(
+        self._log.debug(
             "ReplyingMessage.to_dict"
             f" reply_to_message_id: {self.reply_to_message_id}"
             f" allow_sending_without_reply: {self.allow_sending_without_reply}"

@@ -28,12 +28,12 @@ class GetUpdatesArguments(MethodArgument):
         self._limit = limit
         self._timeout = timeout
         self._allowed_updates = allowed_updates
-        self.log = log
+        self._log = log
 
     def with_offset(
         self, offset: int
     ) -> "GetUpdatesArguments":
-        self.log.debug(f"Setting offset to {offset}")
+        self._log.debug(f"Setting offset to {offset}")
         return GetUpdatesArguments(
             offset,
             self._limit,
@@ -42,7 +42,7 @@ class GetUpdatesArguments(MethodArgument):
         )
 
     def to_dict(self) -> dict[str, Any]:
-        self.log.debug(
+        self._log.debug(
             "Converting GetUpdatesArguments to dict"
         )
         return MethodArguments(

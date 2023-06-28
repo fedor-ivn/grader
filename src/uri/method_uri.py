@@ -12,10 +12,10 @@ class MethodURI(URI):
     ) -> None:
         self._method = method
         self._bot = bot
-        self.log = log
+        self._log = log
 
     def construct_uri(self) -> str:
-        self.log.info(
+        self._log.info(
             f"Constructing URI for method {self._method}"
         )
         return f"{self._bot.construct_uri()}{self._method}"

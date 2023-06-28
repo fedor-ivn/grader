@@ -20,7 +20,7 @@ class GetUserProfilePhotos(Method[ProfilePhotos]):
     ) -> None:
         self._bot = bot
         self.user_id = user_id
-        self.log = log
+        self._log = log
 
     def call(self, bot: URI) -> ProfilePhotos:
         instance = from_dict(
@@ -31,5 +31,5 @@ class GetUserProfilePhotos(Method[ProfilePhotos]):
                 ),
             ).call(MethodURI("getUserProfilePhotos", bot)),
         )
-        self.log.debug("GetUserProfilePhotos method call")
+        self._log.debug("GetUserProfilePhotos method call")
         return instance  # type: ignore

@@ -24,10 +24,10 @@ class Bot(URI):
     ) -> None:
         self._token = token
         self._api_uri = api_uri
-        self.log = log
+        self._log = log
 
     def construct_uri(self) -> str:
-        self.log.debug(
+        self._log.debug(
             f"Bot: {self._token.token()}"
             f"API URI: {self._api_uri.construct_uri()}"
         )
@@ -38,7 +38,7 @@ class Bot(URI):
         todo: need to clarify if we can do such call chains
             bot -> state -> bot
         """
-        self.log.debug(
+        self._log.debug(
             f"Bot: {self._token.token()}"
             f"URI: {self._api_uri.construct_uri()}"
         )
@@ -49,5 +49,5 @@ class Bot(URI):
         todo: need to clarify if we can do such call chains
             bot -> state -> bot
         """
-        self.log.info("Bot.start()")
+        self._log.info("Bot.start()")
         state.start(self)

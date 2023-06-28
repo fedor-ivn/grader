@@ -1,5 +1,9 @@
-from tmpgrader.mock_executable.pipe import MockExecutablePipe
-from tmpgrader.mock_executable.pipe_session import PipeSession
+from tmpgrader.mock_executable.pipe import (
+    MockExecutablePipe,
+)
+from tmpgrader.mock_executable.pipe_session import (
+    PipeSession,
+)
 import os
 import tmpgrader.mock_executable.args_proxy
 

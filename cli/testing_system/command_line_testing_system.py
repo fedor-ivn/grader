@@ -4,7 +4,6 @@ from task_directory import Task
 
 
 class CommandLineTestingSystem(TestingSystem):
-
     def __init__(self):
         super().__init__()
 

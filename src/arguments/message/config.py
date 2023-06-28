@@ -16,10 +16,10 @@ class MessageConfig(MethodArgument):
     ) -> None:
         self.disable_notification = disable_notification
         self.protect_content = protect_content
-        self.log = log
+        self._log = log
 
     def to_dict(self) -> dict[str, Any]:
-        self.log.debug(
+        self._log.debug(
             "MessageConfig.to_dict()"
             f"disable_notification={self.disable_notification}"
             f"protect_content={self.protect_content}"

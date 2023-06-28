@@ -11,10 +11,10 @@ class EventLoop:
         self, handlers: Events, log: AbstractLog = NoLog()
     ) -> None:
         self._handlers = handlers
-        self.log = log
+        self._log = log
 
     def handle_updates(
         self, bot: Bot, updates: Updates
     ) -> None:
-        self.log.info("Handling updates")
+        self._log.info("Handling updates")
         updates.handle(bot, self._handlers)

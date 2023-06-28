@@ -30,10 +30,10 @@ class AllowedUpdates(AbstractAllowedUpdates):
         self._message = message
         self._edited_channel_post = edited_channel_post
         self._callback_query = callback_query
-        self.log = log
+        self._log = log
 
     def to_dict(self) -> dict[str, Any]:
-        self.log.debug("AllowedUpdates.to_dict()")
+        self._log.debug("AllowedUpdates.to_dict()")
         return InlineArgument(
             "allowed_updates",
             [

@@ -10,16 +10,19 @@ from methods.get_user_profile_photos import (
 )
 from methods.get_updates import GetUpdates
 from methods.send_message import SendMessage
-from update.events import Events, OnMessage
+from update.events import Events
 
-from tgtypes.message.message import Message, TextMessage
+
+from tgtypes.message.message import TextMessage
 from polling import Polling
 from dotenv.main import DotEnv
 
 from logger.log import LogConfig
 
+from update.message.text import OnTextMessage
 
-class PrintMessageText(OnMessage):
+
+class PrintMessageText(OnTextMessage):
     def handle(
         self, bot: Bot, message: TextMessage
     ) -> None:
@@ -38,11 +41,12 @@ if __name__ == "__main__":
         format="%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s",
         datefmt="%H:%M:%S",
     ).configure()
+
     Bot(DotenvToken("BOT_TOKEN", DotEnv(".env"))).start(
         Polling(
             EventLoop(
                 Events(
-                    on_message=[
+                    on_text_message=[
                         PrintMessageText(),
                         PrintMessageText(),
                     ],

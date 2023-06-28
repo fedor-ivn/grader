@@ -5,7 +5,6 @@ from cli.testing_system.testing_system import TestingSystem
 
 
 class SubmitCommand(UserCommand):
-
     def __init__(self, task: Task, solution: Solution):
         self.task = task
         self.solution = solution

@@ -56,7 +56,7 @@ class Polling(State):
         self._event_loop = event_loop
         self._config = config
         self._poll_interval = poll_interval_ms
-        self.log = log
+        self._log = log
 
     def start(self, bot: Bot) -> None:
         current_offset = 0

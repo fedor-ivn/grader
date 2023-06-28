@@ -1,7 +1,11 @@
 from abc import ABC
 from dataclasses import dataclass, field
+from typing import TypeVar
 
 from tgtypes.message.message_entity import MessageEntity
+from update.construct_update import UpdateFactory
+
+from update.message.text import TextMessageUpdate
 
 
 @dataclass
@@ -9,8 +13,11 @@ class Chat:
     id: int
 
 
+T = TypeVar("T")
+
+
 @dataclass
-class Message(ABC):
+class Message(UpdateFactory[T]):
     id: int
     date: int
     chat: Chat
@@ -25,8 +32,15 @@ class Text:
 
 
 @dataclass
-class TextMessage(Message):
+class TextMessage(
+    Message[TextMessageUpdate],
+):
     text: Text
+
+    def construct_update(
+        self, update_id: int
+    ) -> TextMessageUpdate:
+        return TextMessageUpdate(update_id, self)
 
 
 # todo: дамир, ну и нахуя ты это написал?

@@ -1,4 +1,6 @@
-from tmpgrader.pseudo_terminal.pseudo_terminal import PseudoTerminal
+from tmpgrader.pseudo_terminal.pseudo_terminal import (
+    PseudoTerminal,
+)
 import termios
 
 

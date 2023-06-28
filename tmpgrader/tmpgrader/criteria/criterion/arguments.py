@@ -1,6 +1,8 @@
 from tmpgrader.criteria.criterion.criterion import Criterion
 from tmpgrader.ibash.session import IBashSession
-from tmpgrader.mock_executable.mock_executable import MockExecutable
+from tmpgrader.mock_executable.mock_executable import (
+    MockExecutable,
+)
 
 
 class ArgumentsCriterion(Criterion):

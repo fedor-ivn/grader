@@ -22,22 +22,14 @@ class JsonRequestContent(RequestContent):
         log: AbstractLog = NoLog(),
     ) -> None:
         self._content = content
-        self.log = log
-
-    # def get_request_kwargs(
-    #     self,
-    # ) -> dict[str, str | dict[str, str]]:
-    #     return {
-    #         "data": json.dumps(self._content),
-    #         "headers": {"Content-Type": "application/json"},
-    #     }
+        self._log = log
 
     def data(self) -> bytes:
-        self.log.info("JsonRequestContent.data()")
+        self._log.info("JsonRequestContent.data()")
         return json.dumps(self._content).encode("utf-8")
 
     def content_type(self) -> str:
-        self.log.info("JsonRequestContent.content_type()")
+        self._log.info("JsonRequestContent.content_type()")
         return "application/json"
 
 

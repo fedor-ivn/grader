@@ -14,10 +14,10 @@ class MergedArgument(MethodArgument):
     ) -> None:
         self._initial = initial
         self._update = update
-        self.log = log
+        self._log = log
 
     def to_dict(self) -> dict[str, Any]:
-        self.log.info(
+        self._log.info(
             "Merging arguments"
             f" {self._initial.to_dict()}"
             f" {self._update.to_dict()}"

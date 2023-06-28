@@ -15,7 +15,7 @@ from logger.no_log import NoLog
 
 class RawMessage(RawType[Message]):
     def parse(self) -> Message:
-        self.log.debug("Parsing raw message")
+        self._log.debug("Parsing raw message")
         required_args = {
             key: self._raw.get(key)
             for key in map(
@@ -27,7 +27,7 @@ class RawMessage(RawType[Message]):
                 "text": str(text),
                 "entities": list(raw_entities),
             }:
-                self.log.debug(
+                self._log.debug(
                     "Message is text message with entities"
                 )
                 return TextMessage(
@@ -41,7 +41,7 @@ class RawMessage(RawType[Message]):
                     **required_args,  # type: ignore
                 )
             case {"text": str(text)}:
-                self.log.debug(
+                self._log.debug(
                     "Message is text message without entities"
                 )
                 return TextMessage(

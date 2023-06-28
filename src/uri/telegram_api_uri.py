@@ -10,8 +10,8 @@ class TelegramApiURI(URI):
         log: AbstractLog = NoLog(),
     ) -> None:
         self._api_uri = api_uri
-        self.log = log
+        self._log = log
 
     def construct_uri(self) -> str:
-        self.log.info("Constructing URI")
+        self._log.info("Constructing URI")
         return self._api_uri
