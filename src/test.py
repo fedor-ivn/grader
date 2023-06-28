@@ -14,7 +14,7 @@ from update.events import Events
 
 
 from tgtypes.message.message import TextMessage
-from polling import Polling
+from polling import Polling, PollingConfig
 from dotenv.main import DotEnv
 
 from logger.log import LogConfig
@@ -37,7 +37,7 @@ class PrintMessageText(OnTextMessage):
 
 if __name__ == "__main__":
     log = LogConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format="%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s",
         datefmt="%H:%M:%S",
     ).configure()
@@ -54,8 +54,9 @@ if __name__ == "__main__":
                 ),
                 log=log,
             ),
+            PollingConfig(log=log),
             log=log,
-        )
+        ),
     )
 
 # GetMe(bot).call()

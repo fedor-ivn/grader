@@ -9,14 +9,14 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from update.events import Events
-    from tgtypes.message.message import TextMessage
+    from tgtypes.message.message import DocumentMessage
 
 
-class TextMessageUpdate(Update):
+class DocumentMessageUpdate(Update):
     def __init__(
         self,
         update_id: int,
-        message: "TextMessage",
+        message: "DocumentMessage",
         log: AbstractLog = NoLog(),
     ) -> None:
         self._id = update_id
@@ -28,12 +28,12 @@ class TextMessageUpdate(Update):
 
     def handle(self, bot: Bot, events: Events) -> None:
         self._log.info(f"MessageUpdate: {self._id} handle")
-        events.handle_text_message(bot, self._message)
+        events.handle_document_message(bot, self._message)
 
 
-class OnTextMessage(OnEvent["TextMessage"]):
+class OnDocumentMessage(OnEvent["DocumentMessage"]):
     @abstractmethod
     def handle(
-        self, bot: Bot, message: "TextMessage"
+        self, bot: Bot, message: "DocumentMessage"
     ) -> None:
         ...

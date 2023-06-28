@@ -1,6 +1,7 @@
 from typing import Any
-from raw_types.message.raw_message import RawMessage
+from raw_types.message.message import RawMessage
 from tgtypes.message.message import Message
+from update.update import Update
 
 from update.updates import Updates
 
@@ -19,7 +20,7 @@ class RawUpdates:
 
     def parse(self) -> Updates:
         self._log.debug("Parsing raw updates...")
-        updates = []
+        updates: list[Update] = []
         for raw_update in self._raw_updates:
             self._log.debug(
                 f"Parsing raw update: {raw_update}"
@@ -31,7 +32,7 @@ class RawUpdates:
                         f"Parsing raw message: {raw_message}"
                     )
                     updates.append(
-                        RawMessage(raw_message)
+                        RawMessage(raw_message, self._log)
                         .parse()
                         .construct_update(update_id)
                     )

@@ -28,7 +28,7 @@ from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
 
 
-class SendMessage(Method[Message]):
+class SendMessage(Method[Message[Any]]):
     def __init__(
         self,
         destination: Destination,
@@ -51,7 +51,7 @@ class SendMessage(Method[Message]):
         # self.reply_markup = reply_markup
         self._log = log
 
-    def call(self, bot: URI) -> Message:
+    def call(self, bot: URI) -> Message[Any]:
         # instance = from_dict(
         #     data_class=Message,
         #     data=RawMethod(

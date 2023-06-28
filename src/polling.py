@@ -22,11 +22,13 @@ class PollingConfig:
         limit: int = 100,
         timeout: int = 0,
         allowed_updates: AbstractAllowedUpdates = DefaultAllowedUpdates(),
+        log: AbstractLog = NoLog(),
     ) -> None:
         self._offset = offset
         self._limit = limit
         self._timeout = timeout
         self._allowed_updates = allowed_updates
+        self._log = log
 
     def method(self) -> GetUpdates:
         return GetUpdates(
@@ -34,6 +36,7 @@ class PollingConfig:
             self._limit,
             self._timeout,
             self._allowed_updates,
+            self._log,
         )
 
     def with_offset(self, offset: int) -> "PollingConfig":

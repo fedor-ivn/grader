@@ -4,6 +4,7 @@ from typing import TypeVar
 
 from tgtypes.message.message_entity import MessageEntity
 from update.construct_update import UpdateFactory
+from update.message.document import DocumentMessageUpdate
 
 from update.message.text import TextMessageUpdate
 
@@ -41,6 +42,27 @@ class TextMessage(
         self, update_id: int
     ) -> TextMessageUpdate:
         return TextMessageUpdate(update_id, self)
+
+
+@dataclass
+class Document:
+    file_id: str
+    file_unique_id: str
+
+
+@dataclass
+class DocumentMessage(
+    Message[DocumentMessageUpdate],
+):
+    document: Document
+    caption: Text
+
+    def construct_update(
+        self, update_id: int
+    ) -> DocumentMessageUpdate:
+        return DocumentMessageUpdate(update_id, self)
+
+    # media_group_id: str | None = None
 
 
 # todo: дамир, ну и нахуя ты это написал?

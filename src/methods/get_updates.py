@@ -60,5 +60,7 @@ class GetUpdates(Method[Updates]):
                         ]
                     ).to_dict()
                 ),
-            ).call(MethodURI("getUpdates", bot))
+                log=self._log,
+            ).call(MethodURI("getUpdates", bot)),
+            log=self._log,
         ).parse()
