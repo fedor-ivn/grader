@@ -6,8 +6,13 @@ from tgtypes.message.message import (
 )
 from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
+from tgtypes.message.unknown import UnknownMessage
 from update.message.document import OnDocumentMessage
 from update.message.text import OnTextMessage
+from update.message.unknown import (
+    UnknownMessageWarning,
+    OnUnknownMessage,
+)
 from update.on_event import OnEvent
 
 
@@ -37,10 +42,12 @@ class Events:
         self,
         on_text_message: list[OnTextMessage] = [],
         on_document_message: list[OnDocumentMessage] = [],
+        on_unknown_message: list[OnUnknownMessage] = [],
         log: AbstractLog = NoLog(),
     ) -> None:
         self._on_text_message = on_text_message
         self._on_document_message = on_document_message
+        self._on_unknown_message = on_unknown_message
         self._log = log
 
     def handle_text_message(
@@ -54,5 +61,12 @@ class Events:
         self, bot: Bot, message: DocumentMessage
     ) -> None:
         Event(self._on_document_message, self._log).handle(
+            bot, message
+        )
+
+    def handle_unknown_message(
+        self, bot: Bot, message: UnknownMessage
+    ) -> None:
+        Event(self._on_unknown_message, self._log).handle(
             bot, message
         )

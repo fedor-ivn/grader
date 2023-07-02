@@ -1,6 +1,7 @@
 from abc import ABC
 from dataclasses import dataclass, field
 from typing import TypeVar
+from arguments.message.destination import Destination
 
 from tgtypes.message.message_entity import MessageEntity
 from update.construct_update import UpdateFactory
@@ -13,6 +14,9 @@ from update.message.text import TextMessageUpdate
 class Chat:
     id: int
 
+    def create_destination(self) -> Destination:
+        return Destination(chat_id=self.id)
+
 
 T = TypeVar("T")
 
@@ -24,12 +28,22 @@ class Message(UpdateFactory[T]):
     chat: Chat
 
 
+class AbstractText:
+    pass
+
+
 @dataclass
-class Text:
+class Text(AbstractText):
     value: str
     entities: list[MessageEntity] = field(
         default_factory=list
     )
+
+
+class NoText(AbstractText):
+    def __init__(self) -> None:
+        self.value = ""
+        self.entities: list[MessageEntity] = []
 
 
 @dataclass
@@ -55,7 +69,7 @@ class DocumentMessage(
     Message[DocumentMessageUpdate],
 ):
     document: Document
-    caption: Text
+    caption: AbstractText = NoText()
 
     def construct_update(
         self, update_id: int

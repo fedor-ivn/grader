@@ -7,6 +7,7 @@ from tgtypes.message.message import Document
 class RawDocument(RawType[Document]):
     def parse(self) -> Document:
         self._log.debug("Parsing raw document")
+        self._log.debug(str(self._raw))
         required_args = {
             key: self._raw.get(key)
             for key in map(

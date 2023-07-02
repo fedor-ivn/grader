@@ -21,6 +21,7 @@ from methods.method import Method
 from bot.inner_bot import Bot
 from content import JsonRequestContent
 from methods.raw_method import RawMethod
+from raw_types.message.message import RawMessage
 from tgtypes.message.message import Message
 from uri.method_uri import MethodURI
 from uri.uri import URI
@@ -52,27 +53,7 @@ class SendMessage(Method[Message[Any]]):
         self._log = log
 
     def call(self, bot: URI) -> Message[Any]:
-        # instance = from_dict(
-        #     data_class=Message,
-        #     data=RawMethod(
-        #         MethodURI("sendMessage", self._bot),
-        #         JsonRequestContent(
-        #             MethodArguments(
-        #                 [
-        #                     InlineMethodArgument(
-        #                         "chat_id", self._chat_id
-        #                     ),
-        #                     self._message_thread_id,
-        #                     self._text,
-        #                     self._config,
-        #                     self._reply,
-        #                     self.reply_markup,
-        #                 ]
-        #             ).to_dict()
-        #         ),
-        #     ).call(),
-        # )
-        instance = (
+        return RawMessage(
             RawMethod(
                 JsonRequestContent(
                     MethodArguments(
@@ -91,6 +72,4 @@ class SendMessage(Method[Message[Any]]):
                     ).to_dict()
                 ),
             ).call(MethodURI("sendMessage", bot)),
-        )
-        self._log.debug(f"Message sent: {instance}")
-        return instance  # type: ignore
+        ).parse()

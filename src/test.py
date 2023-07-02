@@ -1,38 +1,34 @@
 import logging
-from arguments.message.destination import Destination
 from bot.inner_bot import Bot
 from bot.token import DotenvToken
 from event_loop import EventLoop
 from arguments.message.text import PlainText
-from methods.get_me import GetMe
-from methods.get_user_profile_photos import (
-    GetUserProfilePhotos,
-)
-from methods.get_updates import GetUpdates
+from logger.abstract_log import AbstractLog
+from logger.no_log import NoLog
 from methods.send_message import SendMessage
 from update.events import Events
 
 
-from tgtypes.message.message import TextMessage
+from tgtypes.message.message import (
+    DocumentMessage,
+    TextMessage,
+)
 from polling import Polling, PollingConfig
 from dotenv.main import DotEnv
 
 from logger.log import LogConfig
+from update.message.document import OnDocumentMessage
+from update.message.unknown import UnknownMessageWarning
 
-from update.message.text import OnTextMessage
 
+class GradeTask(OnDocumentMessage):
+    def __init__(self, log: AbstractLog = NoLog()) -> None:
+        self._log = log
 
-class PrintMessageText(OnTextMessage):
     def handle(
-        self, bot: Bot, message: TextMessage
+        self, bot: Bot, message: DocumentMessage
     ) -> None:
-        print(message.text.value)
-        bot.call_method(
-            SendMessage(
-                Destination(chat_id=742596099),
-                text=PlainText(message.text.value),
-            )
-        )
+        print(message.document.file_id)
 
 
 if __name__ == "__main__":
@@ -41,14 +37,16 @@ if __name__ == "__main__":
         format="%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s",
         datefmt="%H:%M:%S",
     ).configure()
-
+    log.debug("Starting bot")
     Bot(DotenvToken("BOT_TOKEN", DotEnv(".env"))).start(
         Polling(
             EventLoop(
                 Events(
-                    on_text_message=[
-                        PrintMessageText(),
-                        PrintMessageText(),
+                    on_document_message=[
+                        GradeTask(log=log),
+                    ],
+                    on_unknown_message=[
+                        UnknownMessageWarning(log=log),
                     ],
                     log=log,
                 ),
