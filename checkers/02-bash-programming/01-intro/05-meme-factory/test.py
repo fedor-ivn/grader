@@ -14,7 +14,7 @@ from grader.criteria.criterion.arguments import (
     ArgumentsCriterion,
 )
 from grader.ibash.ibash import IBash
-from grader.tests.test import Test
+from grader.tests.test import TestTemplate
 from grader.output.result.result import Result
 from grader.output.feedback.feedback import (
     Feedback,
@@ -26,9 +26,9 @@ from grader.criteria.criterion.error import (
 )
 
 
-class MemeFactoryTest(Test):
+class Test(TestTemplate):
     def __init__(self) -> None:
-        convert_mock = MockExecutable("convert", "pipes")
+        convert_mock = MockExecutable("convert", "/tmp")
         pipe_session = convert_mock.create()
         self._criteria = SequentialCriteria(
             [
@@ -97,11 +97,9 @@ class MemeFactoryTest(Test):
     def test_score(self, solution: IBash) -> str:
         return f"Overall score: {self._criteria.score()}"
 
-    def output(self, file: str) -> str:
-        self._criteria.test(IBash(file).start_session())
-        return f"Test results:\n{self.test(IBash(file))}\n{self.test_score(IBash(file))}"
-    
-
-print(MemeFactoryTest().output("solution.sh"))
+    def output(self, solution: IBash) -> str:
+        self._criteria.test(solution.start_session())
+        return f"Test results:\n{self.test(solution)}\n{self.test_score(solution)}"
 
 
+# print(Test().output(IBash("solution.sh")))

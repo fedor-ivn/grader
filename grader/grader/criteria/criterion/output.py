@@ -18,7 +18,7 @@ class OutputCriterion(Criterion):
             self._expected_output
         )
         return self._is_expected
-        
+
     def feedback(self) -> str:
         return self._result.result(self._is_expected)
 

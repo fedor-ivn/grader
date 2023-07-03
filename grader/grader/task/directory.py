@@ -1,6 +1,6 @@
 import os
-from task.symlink import TasksSymlinks
-from task.task import Task
+from grader.task.symlink import TasksSymlinks
+from grader.task.task import Task
 
 
 class TasksDirectory:

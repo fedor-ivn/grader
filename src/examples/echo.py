@@ -11,7 +11,7 @@ from bot.token import DotenvToken
 from event_loop import EventLoop
 from methods.send_message import SendMessage
 from polling import Polling, PollingConfig
-from tgtypes.message.message import TextMessage
+from tgtypes.message.text import TextMessage
 from update.events import Events
 from update.message.text import OnTextMessage
 

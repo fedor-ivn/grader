@@ -18,7 +18,6 @@ from arguments.method_arguments import (
     MethodArguments,
 )
 from methods.method import Method
-from bot.inner_bot import Bot
 from content import JsonRequestContent
 from methods.raw_method import RawMethod
 from raw_types.message.message import RawMessage

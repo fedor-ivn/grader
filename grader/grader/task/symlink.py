@@ -1,6 +1,8 @@
 import os
 
-from source_directory.directory import SourceDirectory
+from grader.source_directory.directory import (
+    SourceDirectory,
+)
 
 
 class TaskSymlink:

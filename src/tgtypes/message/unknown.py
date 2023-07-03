@@ -1,7 +1,10 @@
+from __future__ import annotations
 from dataclasses import dataclass
-from typing import Any
-from tgtypes.message.message import Message
+from typing import TYPE_CHECKING, Any
 from update.message.unknown import UnknownMessageUpdate
+from tgtypes.message.message import Message
+
+# if TYPE_CHECKING:
 
 
 @dataclass

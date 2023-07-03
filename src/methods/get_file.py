@@ -4,25 +4,27 @@ from logger.no_log import NoLog
 from arguments.inline import InlineArgument
 from content import JsonRequestContent
 from methods.raw_method import RawMethod
-from raw_types.message.document import RawDocument
 from methods.method import Method
+from raw_types.message.fetched_document import (
+    RawFetchedDocument,
+)
 from uri.method_uri import MethodURI
 from uri.uri import URI
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tgtypes.message.message import Document
+    from tgtypes.fetched_document import FetchedDocument
 
 
-class GetFile(Method[Document]):
+class GetFile(Method["FetchedDocument"]):
     def __init__(self, file_id: str) -> None:
         self.file_id = file_id
 
     def call(
         self, bot: URI, log: AbstractLog = NoLog()
-    ) -> Document:
+    ) -> "FetchedDocument":
         log.debug("GetFile call")
-        return RawDocument(
+        return RawFetchedDocument(
             RawMethod(
                 JsonRequestContent(
                     InlineArgument(

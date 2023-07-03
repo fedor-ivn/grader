@@ -1,5 +1,5 @@
 import os
-from source_directory.required_file import TaskFile
+from grader.source_directory.required_file import TaskFile
 
 
 class TaskFilesHealthcheck:

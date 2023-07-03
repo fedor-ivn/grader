@@ -1,28 +1,8 @@
 from __future__ import annotations
-from abc import ABC
-from dataclasses import dataclass, field
-from typing import IO, Any, AnyStr, TypeVar
-from urllib.request import urlopen
-from arguments.message.destination import Destination
-from methods.get_file import GetFile
-
-from tgtypes.message.message_entity import MessageEntity
+from dataclasses import dataclass
+from typing import TypeVar
+from tgtypes.message.chat import Chat
 from update.construct_update import UpdateFactory
-from update.message.document import DocumentMessageUpdate
-
-from update.message.text import TextMessageUpdate
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from bot.inner_bot import Bot
-
-
-@dataclass
-class Chat:
-    id: int
-
-    def create_destination(self) -> Destination:
-        return Destination(chat_id=self.id)
 
 
 T = TypeVar("T")
@@ -33,64 +13,6 @@ class Message(UpdateFactory[T]):
     id: int
     date: int
     chat: Chat
-
-
-class AbstractText:
-    pass
-
-
-@dataclass
-class Text(AbstractText):
-    value: str
-    entities: list[MessageEntity] = field(
-        default_factory=list
-    )
-
-
-class NoText(AbstractText):
-    def __init__(self) -> None:
-        self.value = ""
-        self.entities: list[MessageEntity] = []
-
-
-@dataclass
-class TextMessage(
-    Message[TextMessageUpdate],
-):
-    text: Text
-
-    def construct_update(
-        self, update_id: int
-    ) -> TextMessageUpdate:
-        return TextMessageUpdate(update_id, self)
-
-
-@dataclass
-class Document:
-    file_id: str
-    file_unique_id: str
-    file_path: str
-
-    def fetch(self) -> GetFile:
-        return GetFile(self.file_id)
-
-    def open(self, bot: Bot) -> Any:
-        return urlopen(
-            f"{bot.construct_file_uri()}{self.file_path}"
-        )
-
-
-@dataclass
-class DocumentMessage(
-    Message[DocumentMessageUpdate],
-):
-    document: Document
-    caption: AbstractText = NoText()
-
-    def construct_update(
-        self, update_id: int
-    ) -> DocumentMessageUpdate:
-        return DocumentMessageUpdate(update_id, self)
 
     # media_group_id: str | None = None
 

@@ -1,7 +1,7 @@
 import os
 
 from more_itertools import flatten
-from source_directory.files_healthcheck import (
+from grader.source_directory.files_healthcheck import (
     TaskFilesHealthcheck,
 )
 

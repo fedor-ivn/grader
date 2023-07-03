@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from update.events import Events
-    from tgtypes.message.message import TextMessage
+    from tgtypes.message.text import TextMessage
 
 
 class TextMessageUpdate(Update):

@@ -1,8 +1,7 @@
 from __future__ import annotations
 from dataclasses import fields
 from raw_types.raw import RawType
-
-from tgtypes.message.message import Document
+from tgtypes.document import Document
 
 
 class RawDocument(RawType[Document]):

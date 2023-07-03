@@ -1,21 +1,13 @@
-from dataclasses import fields
-from typing import Any, TypeVar
-from exceptions import UnexpectedResponseException
+from typing import TypeVar
 from raw_types.message.chat import RawChat
 from raw_types.message.document import RawDocument
 from raw_types.message.raw_entity import RawEntity
 from raw_types.raw import RawType
+from tgtypes.message.document import DocumentMessage
 
-from tgtypes.message.message import (
-    DocumentMessage,
-    Message,
-    Text,
-    TextMessage,
-)
+from tgtypes.message.message import Message
 
-from logger.abstract_log import AbstractLog
-from logger.no_log import NoLog
-
+from tgtypes.message.text import Text, TextMessage
 from tgtypes.message.unknown import UnknownMessage
 
 T = TypeVar("T")

@@ -10,7 +10,6 @@ from bot.inner_bot import Bot
 
 from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
-from tgtypes.message.unknown import UnknownMessage
 from update.message.text import OnTextMessage
 from update.message.unknown import (
     UnknownMessageWarning,
@@ -20,10 +19,15 @@ from update.on_event import OnEvent
 
 
 if TYPE_CHECKING:
-    from tgtypes.message.message import (
+    from tgtypes.message.unknown import UnknownMessage
+    from tgtypes.message.document import (
         DocumentMessage,
+    )
+
+    from tgtypes.message.text import (
         TextMessage,
     )
+
     from update.message.document import OnDocumentMessage
 
 T = TypeVar("T")

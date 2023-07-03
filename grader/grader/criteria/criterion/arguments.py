@@ -25,28 +25,28 @@ class ArgumentsCriterion(Criterion):
 
         success = True
 
-        if collected_args[0] != '-gravity':
+        if collected_args[0] != "-gravity":
             success = False
 
-        if collected_args[1] not in ['south', 'north']:
+        if collected_args[1] not in ["south", "north"]:
             success = False
 
-        if collected_args[2] != '-annotate':
+        if collected_args[2] != "-annotate":
             success = False
 
-        if collected_args[3] != '0':
+        if collected_args[3] != "0":
             success = False
 
-        if collected_args[4] != 'четыре':
+        if collected_args[4] != "четыре":
             success = False
 
-        if collected_args[5] != 'six-four.jpg':
+        if collected_args[5] != "six-four.jpg":
             success = False
 
         self._is_expected = success
 
         return success
-    
+
     def feedback(self) -> str:
         return self._result.result(True)
 

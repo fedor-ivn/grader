@@ -10,7 +10,7 @@ class SequentialCriteria(Criteria):
     def test(self, solution: IBashSession) -> None:
         for criterion in self._criteria:
             criterion.test(solution)
-    
+
     def feedback(self) -> str:
         result = ""
         for criterion in self._criteria:

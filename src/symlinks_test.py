@@ -1,17 +1,21 @@
-from source_directory.directory import SourceDirectory
-from source_directory.files_healthcheck import (
+from grader.source_directory.directory import (
+    SourceDirectory,
+)
+from grader.source_directory.files_healthcheck import (
     TaskFilesHealthcheck,
 )
-from source_directory.required_file import TaskFileGitkeep
-from task.directory import TasksDirectory
-from task.symlink import TasksSymlinks
+from grader.source_directory.required_file import (
+    TaskFileGitkeep,
+)
+from grader.task.directory import TasksDirectory
+from grader.task.symlink import TasksSymlinks
 
 
 tasks = TasksDirectory(
     TasksSymlinks(
-        "tasks-dictionary",
+        "tasks_dictionary",
         SourceDirectory(
-            "checkers",
+            "../checkers",
             2,
             TaskFilesHealthcheck(
                 [

@@ -14,7 +14,8 @@ from logger.no_log import NoLog
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tgtypes.message.message import Document
+    from tgtypes.fetched_document import FetchedDocument
+    from tgtypes.document import Document
 
 
 T = TypeVar("T")
@@ -49,7 +50,9 @@ class Bot(URI):
         )
         return method.call(self)
 
-    def open_document(self, document: Document) -> Any:
+    def open_document(
+        self, document: FetchedDocument
+    ) -> Any:
         self._log.debug("Bot.open_document()")
         return document.open(self)
 

@@ -6,13 +6,11 @@ from grader.output.result.result import Result
 
 
 class ErrorCriterion(Criterion):
-    def __init__(
-        self, result: Result
-    ) -> None:
+    def __init__(self, result: Result) -> None:
         self._result = result
         self._is_expected = False
 
-    def test(self, solution: IBashSession) -> bool: 
+    def test(self, solution: IBashSession) -> bool:
         return_code = solution.check_error()
         if return_code == 0:
             self._is_expected = True

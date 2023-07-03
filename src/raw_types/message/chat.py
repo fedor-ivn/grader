@@ -1,6 +1,6 @@
 from typing import TypeVar
 from raw_types.raw import RawType
-from tgtypes.message.message import Chat, Message
+from tgtypes.message.message import Chat
 
 
 T = TypeVar("T")
