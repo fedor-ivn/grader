@@ -11,7 +11,6 @@ from update.events import Events
 
 from tgtypes.message.message import (
     DocumentMessage,
-    TextMessage,
 )
 from polling import Polling, PollingConfig
 from dotenv.main import DotEnv
@@ -29,15 +28,17 @@ class GradeTask(OnDocumentMessage):
         self, bot: Bot, message: DocumentMessage
     ) -> None:
         print(message.document.file_id)
+        with bot.open_document(message.document) as file:
+            print(file.read())
 
 
 if __name__ == "__main__":
     log = LogConfig(
-        level=logging.DEBUG,
+        level=logging.ERROR,
         format="%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s",
         datefmt="%H:%M:%S",
     ).configure()
-    log.debug("Starting bot")
+
     Bot(DotenvToken("BOT_TOKEN", DotEnv(".env"))).start(
         Polling(
             EventLoop(

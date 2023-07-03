@@ -1,13 +1,16 @@
-from typing import Any, Generic, Sequence, TypeVar
-from bot.inner_bot import Bot
-from tgtypes.message.message import (
-    DocumentMessage,
-    TextMessage,
+from __future__ import annotations
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Generic,
+    Sequence,
+    TypeVar,
 )
+from bot.inner_bot import Bot
+
 from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
 from tgtypes.message.unknown import UnknownMessage
-from update.message.document import OnDocumentMessage
 from update.message.text import OnTextMessage
 from update.message.unknown import (
     UnknownMessageWarning,
@@ -15,6 +18,13 @@ from update.message.unknown import (
 )
 from update.on_event import OnEvent
 
+
+if TYPE_CHECKING:
+    from tgtypes.message.message import (
+        DocumentMessage,
+        TextMessage,
+    )
+    from update.message.document import OnDocumentMessage
 
 T = TypeVar("T")
 

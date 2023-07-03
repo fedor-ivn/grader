@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import fields
 from raw_types.raw import RawType
 

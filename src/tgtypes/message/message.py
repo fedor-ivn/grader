@@ -1,13 +1,20 @@
+from __future__ import annotations
 from abc import ABC
 from dataclasses import dataclass, field
-from typing import TypeVar
+from typing import IO, Any, AnyStr, TypeVar
+from urllib.request import urlopen
 from arguments.message.destination import Destination
+from methods.get_file import GetFile
 
 from tgtypes.message.message_entity import MessageEntity
 from update.construct_update import UpdateFactory
 from update.message.document import DocumentMessageUpdate
 
 from update.message.text import TextMessageUpdate
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from bot.inner_bot import Bot
 
 
 @dataclass
@@ -62,6 +69,15 @@ class TextMessage(
 class Document:
     file_id: str
     file_unique_id: str
+    file_path: str
+
+    def fetch(self) -> GetFile:
+        return GetFile(self.file_id)
+
+    def open(self, bot: Bot) -> Any:
+        return urlopen(
+            f"{bot.construct_file_uri()}{self.file_path}"
+        )
 
 
 @dataclass

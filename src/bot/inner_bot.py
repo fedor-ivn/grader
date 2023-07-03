@@ -1,6 +1,7 @@
+from __future__ import annotations
 import os
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import Any, TypeVar
 import warnings
 from bot.token import Token
 from methods.method import Method
@@ -10,6 +11,10 @@ from uri.telegram_api_uri import TelegramApiURI
 from uri.uri import URI
 from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from tgtypes.message.message import Document
 
 
 T = TypeVar("T")
@@ -43,6 +48,17 @@ class Bot(URI):
             f"URI: {self._api_uri.construct_uri()}"
         )
         return method.call(self)
+
+    def open_document(self, document: Document) -> Any:
+        self._log.debug("Bot.open_document()")
+        return document.open(self)
+
+    def construct_file_uri(self) -> str:
+        self._log.debug(
+            f"Bot: {self._token.token()}"
+            f"API URI: {self._api_uri.construct_uri()}"
+        )
+        return f"{self._api_uri.construct_uri()}file/bot{self._token.token()}/"
 
     def start(self, state: State) -> None:
         """
