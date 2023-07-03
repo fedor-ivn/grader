@@ -7,8 +7,12 @@ from grader.output.result.result import Result
 class Criterion(ABC):
     @abstractmethod
     def test(self, solution: IBashSession) -> bool:
-        pass
+        ...
 
     @abstractmethod
-    def score(self, solution: IBashSession) -> int:
-        pass
+    def feedback(self) -> str:
+        ...
+
+    @abstractmethod
+    def score(self) -> int:
+        ...

@@ -10,19 +10,18 @@ class ErrorCriterion(Criterion):
         self, result: Result
     ) -> None:
         self._result = result
+        self._is_expected = False
 
     def test(self, solution: IBashSession) -> bool: 
         return_code = solution.check_error()
         if return_code == 0:
-            print(self._result.result(True))
-            return True
-        print(self._result.result(False))
-        return False
+            self._is_expected = True
+        else:
+            self._is_expected = False
+        return self._is_expected
 
-    def score(self, solution: IBashSession) -> int:
-        return_code = solution.check_error()
-        if return_code == 0:
-            success = True
-        else: 
-            success = False
-        return self._result.test_score(success)
+    def feedback(self) -> str:
+        return self._result.result(self._is_expected)
+
+    def score(self) -> int:
+        return self._result.test_score(self._is_expected)

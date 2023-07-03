@@ -13,16 +13,16 @@ class PromptCriterion(Criterion):
         self._expected_prompt = expected_prompt
         self._enter = enter
         self._result = result
+        self._is_expected = False
 
     def test(self, solution: IBashSession) -> bool:
-        is_expected = solution.prompt(
+        self._is_expected = solution.prompt(
             self._expected_prompt, self._enter
         )
-        print(self._result.result(is_expected))
-        return is_expected
+        return self._is_expected
 
-    def score(self, solution: IBashSession) -> int:
-        is_expected = solution.prompt(
-            self._expected_prompt, self._enter
-        )
-        return self._result.test_score(is_expected)
+    def feedback(self) -> str:
+        return self._result.result(self._is_expected)
+
+    def score(self) -> int:
+        return self._result.test_score(self._is_expected)

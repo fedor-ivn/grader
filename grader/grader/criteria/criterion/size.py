@@ -10,8 +10,8 @@ class SizeCriterion(Criterion):
         self._max_size = max_size
         self._result = result
 
-    def test(self, solution: IBashSession) -> bool:
+    def test(self, solution: IBashSession) -> str:
         return True
 
     def score(self) -> int:
-        return self._result.test_score()
+        return self._result.test_score(True)

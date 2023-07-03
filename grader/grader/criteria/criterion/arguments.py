@@ -17,15 +17,16 @@ class ArgumentsCriterion(Criterion):
         self._pipe_session = self._mock_executable.create()
         self._pipe_session.start_session()
         self._result = result
+        self._is_expected = False
 
     def test(self, solution: IBashSession) -> bool:
         collected_args = self._pipe_session.collect_args()
-        print(collected_args)
+        # print(collected_args)
 
         success = True
 
         if collected_args[0] != '-gravity':
-            suceess = False
+            success = False
 
         if collected_args[1] not in ['south', 'north']:
             success = False
@@ -42,8 +43,12 @@ class ArgumentsCriterion(Criterion):
         if collected_args[5] != 'six-four.jpg':
             success = False
 
-        print(self._result.result(success))
-        return success
+        self._is_expected = success
 
-    def score(self, solution: IBashSession) -> int:
+        return success
+    
+    def feedback(self) -> str:
+        return self._result.result(True)
+
+    def score(self) -> int:
         return self._result.test_score(True)

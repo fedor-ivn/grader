@@ -11,16 +11,16 @@ class OutputCriterion(Criterion):
     ) -> None:
         self._expected_output = expected_output
         self._result = result
+        self._is_expected = False
 
     def test(self, solution: IBashSession) -> bool:
-        is_expected = solution.expect_output(
+        self._is_expected = solution.expect_output(
             self._expected_output
         )
-        print(self._result.result(is_expected))
-        return is_expected
+        return self._is_expected
+        
+    def feedback(self) -> str:
+        return self._result.result(self._is_expected)
 
-    def score(self, solution: IBashSession) -> int:
-        is_expected = solution.expect_output(
-            self._expected_output
-        )
-        return self._result.test_score(is_expected)
+    def score(self) -> int:
+        return self._result.test_score(self._is_expected)

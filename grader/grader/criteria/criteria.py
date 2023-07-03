@@ -6,9 +6,9 @@ class Criteria:
     def __init__(self, criteria: list[Criterion]):
         self._criteria = criteria
 
-    def test(self, solution: IBashSession) -> bool:
+    def test(self, solution: IBashSession) -> None:
         # return [
         #     criterion.test(solution)
         #     for criterion in self._criteria
         # ]
-        return True
+        ...
