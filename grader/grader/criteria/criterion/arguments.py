@@ -21,8 +21,29 @@ class ArgumentsCriterion(Criterion):
     def test(self, solution: IBashSession) -> bool:
         collected_args = self._pipe_session.collect_args()
         print(collected_args)
-        print(self._result.result(True))
-        return True
+
+        success = True
+
+        if collected_args[0] != '-gravity':
+            suceess = False
+
+        if collected_args[1] not in ['south', 'north']:
+            success = False
+
+        if collected_args[2] != '-annotate':
+            success = False
+
+        if collected_args[3] != '0':
+            success = False
+
+        if collected_args[4] != 'четыре':
+            success = False
+
+        if collected_args[5] != 'six-four.jpg':
+            success = False
+
+        print(self._result.result(success))
+        return success
 
     def score(self, solution: IBashSession) -> int:
         return self._result.test_score(True)

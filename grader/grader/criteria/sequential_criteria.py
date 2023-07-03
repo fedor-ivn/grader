@@ -14,8 +14,8 @@ class SequentialCriteria(Criteria):
                 return False
         return True
 
-    def score(self) -> int:
+    def score(self, solution: IBashSession) -> int:
         overall_score = 0
         for criterion in self._criteria:
-            overall_score += criterion.score()
-        return self.overall_score()
+            overall_score += criterion.score(solution)
+        return overall_score

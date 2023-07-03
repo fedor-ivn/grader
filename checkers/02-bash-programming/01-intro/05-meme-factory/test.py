@@ -21,6 +21,10 @@ from grader.output.feedback.feedback import (
 )
 from grader.output.score.score import Score
 
+from grader.criteria.criterion.error import (
+    ErrorCriterion,
+)
+
 
 class MemeFactoryTest(Test):
     def __init__(self) -> None:
@@ -28,8 +32,6 @@ class MemeFactoryTest(Test):
         pipe_session = convert_mock.create()
         self._criteria = SequentialCriteria(
             [
-                SequentialCriteria(
-                    [
                         PromptCriterion(
                             expected_prompt="Подпись к мему: ",
                             enter="четыре",
@@ -53,11 +55,7 @@ class MemeFactoryTest(Test):
                                 score=Score(max_score=5),
                                 test_num=2,
                             ),
-                        ),
-                    ]
                 ),
-                SequentialCriteria(
-                    [
                         ArgumentsCriterion(
                             convert_mock,
                             result=Result(
@@ -80,8 +78,17 @@ class MemeFactoryTest(Test):
                                 test_num=4,
                             ),
                         ),
-                    ]
-                ),
+
+                        ErrorCriterion(
+                            result=Result(
+                                feedback=Feedback(
+                                    positive="Скрипт выполняется без ошибок",
+                                    negative="Скрипт выполняется с ошибками",
+                                ),
+                                score=Score(max_score=30),
+                                test_num=5,
+                            ),
+                        ),
             ]
         )
 
@@ -89,7 +96,7 @@ class MemeFactoryTest(Test):
         self._criteria.test(solution.start_session())
 
     def test_score(self, solution: IBash) -> None:
-        print(f"Overall score: {self._criteria.score()}")
+        print(f"Overall score: {self._criteria.score(solution.start_session())}")
 
 
 MemeFactoryTest().test(IBash("solution.sh"))

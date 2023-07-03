@@ -24,3 +24,6 @@ class IBashSession:
         ok = self.expect_output(expected_prompt)
         self.enter_line(enter)
         return ok
+    
+    def check_error(self):
+        return self._process.wait()
