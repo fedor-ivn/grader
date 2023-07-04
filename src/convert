@@ -26,5 +26,6 @@ class ArgsProxy:
 
 
 if __name__ == "__main__":
-    args_proxy = ArgsProxy(pipe_path="pipes/convert")
+    args_proxy = ArgsProxy(pipe_path="/tmp/convert")
     args_proxy.send_arguments()
+

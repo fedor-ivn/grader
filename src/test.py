@@ -33,6 +33,10 @@ from grader.source_directory.required_file import (
 from grader.task.directory import TasksDirectory
 from grader.task.symlink import TasksSymlinks
 
+import importlib
+import importlib.util
+import os
+
 
 class GradeTask(OnDocumentMessage):
     def __init__(
@@ -58,17 +62,15 @@ class GradeTask(OnDocumentMessage):
             with open(
                 f"{task.task_path}/test.py"
             ) as grader:
-                print(grader.read())
+                pass
 
             with open("solution.sh", "w") as solution_file:
                 solution_file.write(solution)
 
-            Test().output(IBash("solution.sh"))  # type: ignore
-
             bot.call_method(
                 SendMessage(
                     message.chat.create_destination(),
-                    PlainText("Иди в пизду!"),
+                    PlainText(classes[-1]().output(IBash("solution.sh"))),
                     reply=ReplyingMessage(message.id),
                 )
             )
@@ -98,10 +100,17 @@ if __name__ == "__main__":
     print(task.task_path)
     with open(f"{task.task_path}/test.py") as grader:
         grader_code = grader.read()
+        spec = importlib.util.spec_from_file_location("module_name", f"{task.task_path}/test.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        
+        classes = [cls for cls in module.__dict__.values() if isinstance(cls, type)]
+        
+        print(classes)
     # todo: import grader on a fly
     # https://stackoverflow.com/questions/301134/how-can-i-import-a-module-dynamically-given-its-name-as-string
 
-    Test().output(IBash("solution.sh"))  # type: ignore
+    print(classes[-1]().output(IBash("solution.sh")))  # type: ignore
 
     log = LogConfig(
         level=logging.ERROR,
