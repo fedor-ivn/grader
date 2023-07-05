@@ -1,7 +1,7 @@
 from eobot.arguments.argument import (
     MethodArgument,
 )
-from arguments.inline import InlineArgument
+from eobot.arguments.inline import InlineArgument
 from typing import Any
 
 from logger.abstract_log import AbstractLog

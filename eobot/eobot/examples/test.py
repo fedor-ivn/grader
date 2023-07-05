@@ -82,7 +82,7 @@ if __name__ == "__main__":
         TasksSymlinks(
             "tasks_directory",
             SourceDirectory(
-                "../checkers",
+                "../../../checkers",
                 2,
                 TaskFilesHealthcheck(
                     [
