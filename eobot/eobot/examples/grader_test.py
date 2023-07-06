@@ -33,6 +33,8 @@ from grader.source_directory.required_file import (
 from grader.task.directory import TasksDirectory
 from grader.task.symlink import TasksSymlinks
 
+from eobot.examples.task_grader import TaskGrader
+
 import importlib
 import importlib.util
 import os
@@ -57,20 +59,14 @@ class GradeTask(OnDocumentMessage):
         with bot.open_document(fetched_document) as file:
             solution = file.read().decode("utf-8")
 
-            task = tasks.get_task("meme-factory")
-            print(task.task_path)
-            with open(
-                f"{task.task_path}/test.py"
-            ) as grader:
-                pass
+            task_test = TaskGrader(self.source_directory).grader_object("meme-factory")
 
-            with open("solution.sh", "w") as solution_file:
-                solution_file.write(solution)
+            print(task_test)
 
             bot.call_method(
                 SendMessage(
                     message.chat.create_destination(),
-                    PlainText(classes[-1]().output(IBash("solution.sh"))),
+                    PlainText(task_test().output(IBash("solution.sh"))),
                     reply=ReplyingMessage(message.id),
                 )
             )
@@ -78,7 +74,7 @@ class GradeTask(OnDocumentMessage):
 
 if __name__ == "__main__":
     # todo: call source directory
-    tasks_directory = tasks = TasksDirectory(
+    tasks_directory = TasksDirectory(
         TasksSymlinks(
             "tasks_directory",
             SourceDirectory(
@@ -96,20 +92,6 @@ if __name__ == "__main__":
             ),
         ),
     )
-    task = tasks.get_task("meme-factory")
-    print(task.task_path)
-    with open(f"{task.task_path}/test.py") as grader:
-        spec = importlib.util.spec_from_file_location("module_name", f"{task.task_path}/test.py")
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        
-        classes = [cls for cls in module.__dict__.values() if isinstance(cls, type)]
-        
-        print(classes)
-    # todo: import grader on a fly
-    # https://stackoverflow.com/questions/301134/how-can-i-import-a-module-dynamically-given-its-name-as-string
-
-    # print(classes[-1]().output(IBash("solution.sh")))  # type: ignore
 
     log = LogConfig(
         level=logging.ERROR,
@@ -135,24 +117,3 @@ if __name__ == "__main__":
             log=log,
         ),
     )
-
-# GetMe(bot).call()
-# print(GetUserProfilePhotos(bot, user_id=742596099).call())
-
-# print(
-#     bot.call_method(
-#         SendMessage(
-#             chat_id=742596099,
-#             text=PlainText("Hello!"),
-#         )
-#     )
-# )
-
-# print(
-#     bot.call_method(
-#         GetUpdates(
-#             # chat_id=742596099,
-#             # text=PlainText("Hello!"),
-#         )
-#     )
-# )
