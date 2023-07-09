@@ -109,6 +109,19 @@ files = [
 dev = ["black", "coveralls", "mypy", "pre-commit", "pylint", "pytest (>=5)", "pytest-benchmark", "pytest-cov"]
 
 [[package]]
+name = "eobot"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = "^3.10"
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "eobot"
+
+[[package]]
 name = "grader"
 version = "0.1.0"
 description = ""
@@ -236,4 +249,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1c41f5f4d747c6c7e80a60701f09b86fe4b1594690c8b936d6f251e3f7e1900f"
+content-hash = "6a912adffeda9b167a7536f53fc8377074aaf6e61bb30c43879556debfbafdd1"

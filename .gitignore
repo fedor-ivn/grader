@@ -4,3 +4,4 @@ tasks-dictionary
 __pycache__
 .mypy_cache
 tmp
+.env

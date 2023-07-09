@@ -10,12 +10,12 @@ class SourceDirectory:
     def __init__(
         self,
         source_tree: str,
-        depth: int,
         task_files_healthcheck: TaskFilesHealthcheck,
+        depth: int,
     ):
         self.source_tree = source_tree
-        self.depth = depth
         self.task_files_healthcheck = task_files_healthcheck
+        self.depth = depth
 
     def _traverse_directory(
         self, path: str, remaining_depth: int
