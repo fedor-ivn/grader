@@ -24,11 +24,13 @@ from grader.criteria.criterion.size import (
     SizeCriterion,
 )
 
+from grader.tests.test import TestTemplate
+from grader.output.test_output.test_output import TestOutput
 
 import os
 
 
-class WalkerTest(Test):
+class WalkerTest(TestTemplate):
     def __init__(self) -> None:
         self._criteria = SequentialCriteria(
             [
@@ -95,15 +97,12 @@ class WalkerTest(Test):
             ]
         )
 
-    def test(self) -> str:
-        return f"{self._criteria.feedback()}"
-
-    def test_score(self) -> str:
-        return f"Overall score: {self._criteria.score()}"
-
-    def output(self, file: str) -> str:
-        self._criteria.test(IBash(file).start_session())
-        return f"Test results:\n{self.test()}\n{self.test_score()}"
+    def output(self, solution: IBash) -> str:
+        test_output: TestOutput
+        test_output = self._criteria.test(
+            solution.start_session()
+        )
+        return test_output.output()  # type: ignore
 
 
-print(WalkerTest().output("reference-solution.sh"))
+print(Test().output(IBash("reference-solution.sh")))

@@ -5,6 +5,8 @@ from grader.mock_executable.mock_executable import (
 )
 from grader.output.result.result import Result
 
+from grader.criteria.criterion.criterion_output.criterion_output import CriterionOutput
+
 
 class ArgumentsCriterion(Criterion):
     def __init__(
@@ -19,9 +21,8 @@ class ArgumentsCriterion(Criterion):
         self._result = result
         self._is_expected = False
 
-    def test(self, solution: IBashSession) -> bool:
+    def test(self, solution: IBashSession) -> CriterionOutput:
         collected_args = self._pipe_session.collect_args()
-        # print(collected_args)
 
         success = True
 
@@ -45,10 +46,8 @@ class ArgumentsCriterion(Criterion):
 
         self._is_expected = success
 
-        return success
-
-    def feedback(self) -> str:
-        return self._result.result(True)
-
-    def score(self) -> int:
-        return self._result.test_score(True)
+        return CriterionOutput(
+            is_passed=success,
+            feedback=self._result.result(success),
+            score=self._result.test_score(success),
+        )

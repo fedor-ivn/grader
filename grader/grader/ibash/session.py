@@ -1,8 +1,10 @@
 from subprocess import Popen
 import os
 
-
 class IBashSession:
+    """
+
+    """
     def __init__(self, process: Popen, master: int) -> None:
         self._process = process
         self._master = master

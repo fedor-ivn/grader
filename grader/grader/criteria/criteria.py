@@ -9,15 +9,15 @@ class Criteria:
         self._criteria = criteria
 
     def test(self, solution: IBashSession) -> TestOutput:
-        # return [
-        #     criterion.test(solution)
-        #     for criterion in self._criteria
-        # ]
         feedback = ""
         overall_score = 0
+
         for criterion in self._criteria:
-            criterion.test(solution)
-            feedback += criterion.feedback()
+            output = criterion.test(solution)
+
+            feedback += output.feedback()
             feedback += "\n"
-            overall_score += criterion.score()
+
+            overall_score += output.score()
+
         return TestOutput(overall_score, feedback)

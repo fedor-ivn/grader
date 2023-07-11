@@ -14,7 +14,6 @@ class IBash:
         self._pty = NoEchoPseudoTerminal(
             SimplePseudoTerminal()
         )
-        # todo: govnokod
         self._args: list[str] = []
 
     def start_session(self) -> IBashSession:
