@@ -24,6 +24,7 @@ from grader.output.score.score import Score
 from grader.criteria.criterion.error import (
     ErrorCriterion,
 )
+from grader.output.test_output.test_output import TestOutput
 
 
 class Test(TestTemplate):
@@ -91,15 +92,10 @@ class Test(TestTemplate):
             ]
         )
 
-    def test(self, solution: IBash) -> str:
-        return f"{self._criteria.feedback()}"
-
-    def test_score(self, solution: IBash) -> str:
-        return f"Overall score: {self._criteria.score()}"
-
     def output(self, solution: IBash) -> str:
-        self._criteria.test(solution.start_session())
-        return f"Test results:\n{self.test(solution)}\n{self.test_score(solution)}"
+        test_output: TestOutput
+        test_output = self._criteria.test(solution.start_session())
+        return test_output.output() #type: ignore
 
 
-# print(Test().output(IBash("solution.sh")))
+print(Test().output(IBash("reference-solution.sh")))
