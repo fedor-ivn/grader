@@ -1,5 +1,7 @@
 from typing import Any
-from arguments.keyboard.abstract import AbstractKeyboard
+from eobot.arguments.keyboard.abstract import (
+    AbstractKeyboard,
+)
 from arguments.keyboard.button import Button
 from eobot.arguments.method_arguments import MethodArguments
 

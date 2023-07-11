@@ -1,4 +1,4 @@
-from methods.method import Method
+from eobot.methods.method import Method
 from content import EmptyRequestContent
 from uri.method_uri import MethodURI
 from tgtypes.user.me import Me

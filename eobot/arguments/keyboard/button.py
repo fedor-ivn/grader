@@ -13,10 +13,11 @@ class Button(MethodArgument):
             [] request_poll
             [] request_game
     """
+
     def __init__(self, text: str) -> None:
         self.text = text
-    
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "text": self.text,
-        }    
+        }

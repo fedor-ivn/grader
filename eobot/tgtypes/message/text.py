@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
-from tgtypes.message.message import Message
+import re
+from eobot.tgtypes.message.message import Message
 
-from tgtypes.message.message_entity import (
+from eobot.tgtypes.message.entity import (
     MessageEntity,
 )
 from update.message.text import TextMessageUpdate
@@ -17,6 +18,13 @@ class Text(AbstractText):
     entities: list[MessageEntity] = field(
         default_factory=list
     )
+
+    def match(self, regex: str) -> bool:
+        result = re.search(regex, self.value)
+        if result:
+            return True
+        else:
+            return False
 
 
 class NoText(AbstractText):

@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
 from bot.inner_bot import Bot
-from update.on_event import OnEvent
-from update.update import Update
+from eobot.update.on_event import OnEvent
+from eobot.update.update import Update
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

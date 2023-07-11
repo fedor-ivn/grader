@@ -1,6 +1,6 @@
 from dataclasses import fields
 from raw_types.raw import RawType
-from tgtypes.message.message_entity import (
+from eobot.tgtypes.message.entity import (
     MessageEntity,
     Mention,
     Hashtag,

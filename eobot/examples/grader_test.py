@@ -1,6 +1,7 @@
 import logging
 import os
 import pprint
+from typing import Any
 
 from arguments.message.replying import ReplyingMessage
 from bot.inner_bot import Bot
@@ -8,10 +9,15 @@ from bot.token import DotenvToken
 from arguments.keyboard.button import Button
 from arguments.keyboard.keyboard import ReplyKeyboard
 from bot.inner_bot import Bot
+from eobot.update.filter.text import OnMatchedText
 from tgtypes.message.text import TextMessage
-from update.message.text import OnTextMessage
+from eobot.update.message.text import OnTextMessage
 from event_loop import EventLoop
-from arguments.message.text import PlainText
+from eobot.arguments.message.text import (
+    MarkdownV2Text,
+    MessageText,
+    PlainText,
+)
 from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
 from methods.send_message import SendMessage
@@ -23,7 +29,7 @@ from polling import Polling, PollingConfig
 from dotenv.main import DotEnv
 
 from logger.log import LogConfig
-from update.message.document import OnDocumentMessage
+from eobot.update.message.document import OnDocumentMessage
 from update.message.unknown import (
     UnknownMessageWarning,
 )
@@ -42,7 +48,28 @@ from grader.task.directory import TasksDirectory
 from grader.task.symlink import TasksSymlinks
 
 
-class SendKeyboard(OnTextMessage):
+class GreetingText(MessageText):
+    def to_dict(self) -> dict[str, Any]:
+        return PlainText(
+            """
+Hello and welcome to the Task Grading Bot!
+
+I am here to assist you with grading the tasks. With my
+help, you can evaluate your progress on the task, receive
+your score and feedback.
+
+To get started, send /grade command to me.
+
+In case of any problems, do not hesitate to contact the
+developers:
+
+- @fedor_ivn
+- @Probirochniy
+"""
+        ).to_dict()
+
+
+class Hello(OnTextMessage):
     def __init__(
         self,
         log: AbstractLog = NoLog(),
@@ -55,8 +82,16 @@ class SendKeyboard(OnTextMessage):
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
-                PlainText("Hello, world!"),
-                reply_markup=ReplyKeyboard([[Button("1")]]),
+                GreetingText(),
+                reply_markup=ReplyKeyboard(
+                    [
+                        [
+                            Button("walker"),
+                            Button("meme-factory"),
+                        ],
+                        [Button("review-book")],
+                    ]
+                ),
                 log=self._log,
             )
         )
@@ -115,6 +150,13 @@ if __name__ == "__main__":
         Polling(
             EventLoop(
                 Events(
+                    on_text_message=[
+                        Hello(log=log),
+                        OnMatchedText(
+                            "/grade",
+                            Hello(log=log),
+                        ),
+                    ],
                     on_document_message=[
                         GradeTask(
                             TasksDirectory(
@@ -134,9 +176,6 @@ if __name__ == "__main__":
                             ),
                             log=log,
                         ),
-                    ],
-                    on_text_message=[
-                        SendKeyboard(log=log),
                     ],
                     on_unknown_message=[
                         UnknownMessageWarning(log=log),
