@@ -19,7 +19,7 @@ class IBash:
     def start_session(self) -> IBashSession:
         master, slave = self._pty.create_fds()
         process = Popen(
-            ["bash", self._path, *self._args],
+            ["/bin/bash", '-c', self._path, *self._args],
             stdout=slave,
             stdin=slave,
             stderr=slave,

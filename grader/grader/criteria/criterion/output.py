@@ -8,6 +8,9 @@ from grader.criteria.criterion.criterion_output.criterion_output import Criterio
 
 
 class OutputCriterion(Criterion):
+    """
+    The class which checks what the script writes to stdout
+    """
     def __init__(self, expected_output: str, result: Result) -> None:
         self._expected_output = expected_output
         self._result = result

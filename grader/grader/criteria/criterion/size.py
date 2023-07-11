@@ -6,6 +6,9 @@ from grader.criteria.criterion.criterion_output.criterion_output import Criterio
 
 
 class SizeCriterion(Criterion):
+    """
+    Criterion checking the size of the solution
+    """
     def __init__(
         self, max_size: int, result: Result
     ) -> None:

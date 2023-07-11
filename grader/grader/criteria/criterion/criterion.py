@@ -7,6 +7,9 @@ from grader.criteria.criterion.criterion_output.criterion_output import Criterio
 
 
 class Criterion(ABC):
+    """
+    Abstract method which is used to create all of the classes for criterias
+    """
     @abstractmethod
     def test(self, solution: IBashSession) -> CriterionOutput:
         ...

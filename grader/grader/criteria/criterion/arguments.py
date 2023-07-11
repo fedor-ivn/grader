@@ -9,13 +9,16 @@ from grader.criteria.criterion.criterion_output.criterion_output import Criterio
 
 
 class ArgumentsCriterion(Criterion):
+    """
+    The class implementing the criterion for arguments of the 'convert' function, used for meme-factory checker.
+    """
+
     def __init__(
         self,
         mock_executable: MockExecutable,
         result: Result,
     ):
         self._mock_executable = mock_executable
-        # todo: govnokod
         self._pipe_session = self._mock_executable.create()
         self._pipe_session.start_session()
         self._result = result
@@ -25,6 +28,8 @@ class ArgumentsCriterion(Criterion):
         collected_args = self._pipe_session.collect_args()
 
         success = True
+
+        # todo: govnokod
 
         if collected_args[0] != "-gravity":
             success = False

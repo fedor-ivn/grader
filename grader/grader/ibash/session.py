@@ -18,6 +18,8 @@ class IBashSession:
 
     def expect_output(self, expected_output: str) -> bool:
         line = os.read(self._master, 100)
+        print(expected_output)
+        print(line)
         return line == expected_output.encode()
 
     def prompt(

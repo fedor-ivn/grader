@@ -9,6 +9,9 @@ from grader.criteria.criterion.criterion_output.criterion_output import Criterio
 
 class ErrorCriterion(Criterion):
     def __init__(self, result: Result) -> None:
+        """
+        The class implementing an error test. Needed to check if the script returned an error or not 
+        """
         self._result = result
         self._is_expected = False
 

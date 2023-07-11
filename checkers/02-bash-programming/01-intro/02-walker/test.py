@@ -105,4 +105,5 @@ class WalkerTest(TestTemplate):
         return test_output.output()  # type: ignore
 
 
-print(Test().output(IBash("reference-solution.sh")))
+with open("reference-solution.sh") as file:
+    print(Test().output(IBash(file.read())))

@@ -26,23 +26,31 @@ from grader.criteria.criterion.error import (
 )
 from grader.output.test_output.test_output import TestOutput
 
-HELP = '''Доступные команды:
-
-  help         - вывести справку по командам
-  add-review   - добавить отзыв
-  list-reviews - показать все отзывы
-  clear        - удалить все отзывы'''
+HELP = "Доступные команды:\r\n\r\n\
+  help         - вывести справку по командам\n\
+  add-review   - добавить отзыв\n\
+  list-reviews - показать все отзывы\n\
+  clear        - удалить все отзывы\n"
 
 
 class Test(TestTemplate):
     def __init__(self) -> None:
-        convert_mock = MockExecutable("convert", "/tmp")
-        pipe_session = convert_mock.create()
         self._criteria = SequentialCriteria(
             [
                 PromptCriterion(
-                    expected_prompt=HELP,
+                    expected_prompt='> ',
                     enter="help",
+                    result=Result(
+                        feedback=Feedback(
+                            positive="Код запускается корректно",
+                            negative="Код запускается некорректно",
+                        ),
+                        score=Score(max_score=0),
+                        test_num=1,
+                    ),
+                ),
+                OutputCriterion(
+                    expected_output=HELP,
                     result=Result(
                         feedback=Feedback(
                             positive="Команда help работает корректно",
@@ -137,4 +145,5 @@ class Test(TestTemplate):
         return test_output.output()  # type: ignore
 
 
-print(Test().output(IBash("reference-solution.sh")))
+with open("reference-solution.sh") as file:
+    print(Test().output(IBash(file.read())))

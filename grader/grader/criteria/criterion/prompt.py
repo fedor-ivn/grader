@@ -6,6 +6,9 @@ from grader.criteria.criterion.criterion_output.criterion_output import Criterio
 
 
 class PromptCriterion(Criterion):
+    """
+    The criterion to write something to stdin and wait for a specific output
+    """
     def __init__(
         self,
         expected_prompt: str,
