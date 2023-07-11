@@ -4,23 +4,18 @@ from grader.ibash.session import IBashSession
 from grader.ibash.session import IBashSession
 from grader.output.result.result import Result
 
+from grader.criteria.criterion.criterion_output.criterion_output import CriterionOutput
+
 
 class OutputCriterion(Criterion):
-    def __init__(
-        self, expected_output: str, result: Result
-    ) -> None:
+    def __init__(self, expected_output: str, result: Result) -> None:
         self._expected_output = expected_output
         self._result = result
-        self._is_expected = False
 
-    def test(self, solution: IBashSession) -> bool:
-        self._is_expected = solution.expect_output(
-            self._expected_output
+    def test(self, solution: IBashSession) -> CriterionOutput:
+        is_expected = solution.expect_output(self._expected_output)
+        return CriterionOutput(
+            is_passed=is_expected,
+            feedback=self._result.result(is_expected),
+            score=self._result.test_score(is_expected),
         )
-        return self._is_expected
-
-    def feedback(self) -> str:
-        return self._result.result(self._is_expected)
-
-    def score(self) -> int:
-        return self._result.test_score(self._is_expected)

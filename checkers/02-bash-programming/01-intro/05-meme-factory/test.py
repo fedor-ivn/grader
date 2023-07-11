@@ -69,7 +69,7 @@ class Test(TestTemplate):
                     ),
                 ),
                 OutputCriterion(
-                    "Мем сохранён!\r\n",
+                    expected_output="Мем сохранён!\r\n",
                     result=Result(
                         feedback=Feedback(
                             positive="Скрипт выводит сообщение, что мем сохранён",
@@ -94,8 +94,10 @@ class Test(TestTemplate):
 
     def output(self, solution: IBash) -> str:
         test_output: TestOutput
-        test_output = self._criteria.test(solution.start_session())
-        return test_output.output() #type: ignore
+        test_output = self._criteria.test(
+            solution.start_session()
+        )
+        return test_output.output()  # type: ignore
 
 
 print(Test().output(IBash("reference-solution.sh")))
