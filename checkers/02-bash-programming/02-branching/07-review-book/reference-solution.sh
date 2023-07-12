@@ -2,7 +2,7 @@ while read -p "> " command; do
     case $command in
         help)
             echo "Доступные команды:"
-            # echo
+            echo
             echo "  help         - вывести справку по командам"
             echo "  add-review   - добавить отзыв"
             echo "  list-reviews - показать все отзывы"
