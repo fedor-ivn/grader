@@ -32,3 +32,12 @@ class TasksDirectory:
             return Task(task_path)
         else:
             raise KeyError(f"Task {task_name} not found")
+
+    def tasks_list(self) -> list[str]:
+        tasks_list = []
+        for task_name in os.listdir(
+            self.symlinks.target_path
+        ):
+            tasks_list.append(task_name)
+        
+        return tasks_list

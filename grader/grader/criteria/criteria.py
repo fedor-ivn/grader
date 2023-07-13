@@ -3,7 +3,6 @@ from grader.ibash.session import IBashSession
 from grader.output.test_output.test_output import TestOutput
 
 
-
 class Criteria:
     def __init__(self, criteria: list[Criterion]):
         self._criteria = criteria

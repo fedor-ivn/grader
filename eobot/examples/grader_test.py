@@ -8,6 +8,8 @@ from bot.inner_bot import Bot
 from bot.token import DotenvToken
 from arguments.keyboard.button import Button
 from arguments.keyboard.keyboard import ReplyKeyboard
+from arguments.keyboard.create import CreateKeyboard
+from arguments.keyboard.list_to_buttons import ListToButtons
 from bot.inner_bot import Bot
 from eobot.update.filter.text import OnMatchedText
 from tgtypes.message.text import TextMessage
@@ -47,6 +49,8 @@ from grader.source_directory.required_file import (
 from grader.task.directory import TasksDirectory
 from grader.task.symlink import TasksSymlinks
 
+from grader.task.active_tasks import ActiveTasks
+
 
 class GreetingText(MessageText):
     def to_dict(self) -> dict[str, Any]:
@@ -79,19 +83,38 @@ class Hello(OnTextMessage):
     def handle(
         self, bot: Bot, message: TextMessage
     ) -> None:
+        ###############################
+        # todo: xyi
+        script_path = os.path.abspath(
+            os.path.dirname(__file__)
+        )
+        tasks_directory = TasksDirectory(
+            TasksSymlinks(
+                f"{script_path}/tasks_directory",
+                SourceDirectory(
+                    f"{script_path}/../../checkers",
+                    TaskFilesHealthcheck(
+                        [
+                            TaskFileGitkeep(),
+                        ]
+                    ),
+                    depth=2,
+                ),
+            ),
+        )
+
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
                 GreetingText(),
-                reply_markup=ReplyKeyboard(
-                    [
-                        [
-                            Button("walker"),
-                            Button("meme-factory"),
-                        ],
-                        [Button("review-book")],
-                    ]
-                ),
+                reply_markup=CreateKeyboard(
+                    ListToButtons(
+                        ActiveTasks(
+                            f"{script_path}/tasks_directory",
+                            tasks_directory.tasks_list(),
+                        ).active_tasks_list()
+                    ).buttons_list()
+                ).create(),
                 log=self._log,
             )
         )
@@ -115,10 +138,10 @@ class GradeTask(OnDocumentMessage):
 
         with bot.open_document(fetched_document) as file:
             solution = file.read().decode("utf-8")
-            # todo: Damir переделай это.... что за хрень, почему мы сохраняем
-            # солюшн на диск?
-            with open("solution.sh", "w") as f:
-                f.write(solution)
+
+            print(solution)
+
+            print(self.tasks_directory.tasks_list())
 
             try:
                 bot.call_method(
@@ -129,12 +152,13 @@ class GradeTask(OnDocumentMessage):
                                 "meme-factory"
                             )
                             .create_test()
-                            .output(IBash("solution.sh"))
+                            .output(IBash(solution))
                         ),
                         reply=ReplyingMessage(message.id),
                     )
                 )
-            except:
+            except Exception as e:
+                print(e)
                 pass
 
 
@@ -163,7 +187,7 @@ if __name__ == "__main__":
                                 TasksSymlinks(
                                     f"{script_path}/tasks_directory",
                                     SourceDirectory(
-                                        f"{script_path}../../../checkers",
+                                        f"{script_path}/../../checkers",
                                         TaskFilesHealthcheck(
                                             [
                                                 # temporary plug to avoid healthcheck errors

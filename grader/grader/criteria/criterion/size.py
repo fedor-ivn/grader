@@ -9,13 +9,25 @@ class SizeCriterion(Criterion):
     """
     Criterion checking the size of the solution
     """
-    def __init__(
-        self, max_size: int, result: Result
-    ) -> None:
+
+    def __init__(self, max_size: int, result: Result) -> None:
+        """
+        Initializes a new ArgumentsCriterion instance
+
+        Attributes:
+            max_size (int): the maximum size of the script
+            result (Result): results of the test
+        """
         self._max_size = max_size
         self._result = result
 
     def test(self, solution: IBashSession) -> CriterionOutput:
+        """
+        Runs a test of the function and returns the output
+
+        Args:
+            solution (IBashSession): a started bash session
+        """
         return CriterionOutput(
             is_passed=True,
             feedback=self._result.result(True),

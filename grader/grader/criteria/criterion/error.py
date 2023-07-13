@@ -8,14 +8,27 @@ from grader.criteria.criterion.criterion_output.criterion_output import Criterio
 
 
 class ErrorCriterion(Criterion):
+    """
+    The class implementing an error test. Needed to check if the script returned an error or not
+    """
+
     def __init__(self, result: Result) -> None:
         """
-        The class implementing an error test. Needed to check if the script returned an error or not 
+        Initializes a new ErrorCriterion instance
+
+        Attributes:
+            result (Result): results of the test
         """
         self._result = result
         self._is_expected = False
 
     def test(self, solution: IBashSession) -> CriterionOutput:
+        """
+        Runs a test of the function and returns the output
+
+        Args:
+            solution (IBashSession): a started bash session
+        """
         return_code = solution.check_error()
 
         is_expected = False

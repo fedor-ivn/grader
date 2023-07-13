@@ -2,7 +2,18 @@ from abc import ABC
 
 
 class TestOutput(ABC):
+    """
+    This class represents the overall output of the test.
+    """
+
     def __init__(self, score: int, feedback: str) -> None:
+        """
+        Initializes the new TestOutput instance.
+
+        Attributes:
+            score (int): the overall score of the test.
+            feedback (str): the compilation of the feedbacks for critera.
+        """
         self.score = score
         self.feedback = feedback
 

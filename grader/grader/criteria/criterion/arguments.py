@@ -10,7 +10,7 @@ from grader.criteria.criterion.criterion_output.criterion_output import Criterio
 
 class ArgumentsCriterion(Criterion):
     """
-    The class implementing the criterion for arguments of the 'convert' function, used for meme-factory checker.
+    The class implementing the criterion for arguments of the 'convert' command, used for meme-factory checker.
     """
 
     def __init__(
@@ -18,6 +18,13 @@ class ArgumentsCriterion(Criterion):
         mock_executable: MockExecutable,
         result: Result,
     ):
+        """
+        Initializes a new ArgumentsCriterion instance
+
+        Attributes:
+            mock_executable (MockExecutable): a mock executable for the convert command
+            result (Result): results of the test
+        """
         self._mock_executable = mock_executable
         self._pipe_session = self._mock_executable.create()
         self._pipe_session.start_session()
@@ -25,6 +32,12 @@ class ArgumentsCriterion(Criterion):
         self._is_expected = False
 
     def test(self, solution: IBashSession) -> CriterionOutput:
+        """
+        Runs a test of the function and returns the output
+
+        Args:
+            solution (IBashSession): a started bash session
+        """
         collected_args = self._pipe_session.collect_args()
 
         success = True

@@ -42,9 +42,10 @@ class TaskSymlink:
 
         if os.path.exists(task_path):
             print(f"Symlink {name} already exists")
+
         else:
             os.symlink(
-                f"../{self.task_source_path}",
+                self.task_source_path,
                 task_path,
             )
 
