@@ -7,6 +7,9 @@ class Task:
     def __init__(self, task_path: str):
         self.task_path = task_path
 
+    def name(self) -> str:
+        return self.task_path.split("/")[-1]
+
     def create_test(self) -> TestTemplate:
         spec = importlib.util.spec_from_file_location(
             "Test", f"{self.task_path}/test.py"

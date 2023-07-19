@@ -15,7 +15,7 @@ class TasksDirectory:
             self.symlinks.target_path
         )
 
-    def get_task(self, task_name: str) -> Task:
+    def task(self, task_name: str) -> Task:
         """
         Get task by name from the symlinked tasks
         directory. Additionally, performs healthcheck.
@@ -33,11 +33,14 @@ class TasksDirectory:
         else:
             raise KeyError(f"Task {task_name} not found")
 
-    def tasks_list(self) -> list[str]:
-        tasks_list = []
-        for task_name in os.listdir(
-            self.symlinks.target_path
-        ):
-            tasks_list.append(task_name)
-        
+    def tasks(self) -> list[Task]:
+        self.symlinks.healthcheck()
+
+        tasks_list = [
+            Task(task_name)
+            for task_name in os.listdir(
+                self.symlinks.target_path
+            )
+        ]
+
         return tasks_list

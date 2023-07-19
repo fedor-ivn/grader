@@ -21,7 +21,9 @@ class IBashSession:
         self._process = process
         self._master = master
 
-    def enter_line(self, line: str, add_newline: bool = True) -> None:
+    def enter_line(
+        self, line: str, add_newline: bool = True
+    ) -> None:
         """
         Enters the line into the script
 
@@ -43,7 +45,11 @@ class IBashSession:
         line = b""
 
         flags = fcntl.fcntl(self._master, fcntl.F_GETFL)
-        fcntl.fcntl(self._master, fcntl.F_SETFL, flags | os.O_NONBLOCK)
+        fcntl.fcntl(
+            self._master,
+            fcntl.F_SETFL,
+            flags | os.O_NONBLOCK,
+        )
 
         start_time = time.time()
         while True:
@@ -60,10 +66,16 @@ class IBashSession:
             time.sleep(0.1)
 
         flags = fcntl.fcntl(self._master, fcntl.F_GETFL)
-        fcntl.fcntl(self._master, fcntl.F_SETFL, flags & ~os.O_NONBLOCK)
+        fcntl.fcntl(
+            self._master,
+            fcntl.F_SETFL,
+            flags & ~os.O_NONBLOCK,
+        )
         return line == expected_output.encode()
 
-    def prompt(self, expected_prompt: str, enter: str) -> bool:
+    def prompt(
+        self, expected_prompt: str, enter: str
+    ) -> bool:
         """
         Reads the buffer and writes the string into stdin
 

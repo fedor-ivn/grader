@@ -49,9 +49,13 @@ class SourceDirectory:
         Get all task directories in the source
         tree till some depth level.
         """
-        task_paths = self._traverse_directory(
-            self.source_tree, self.depth
-        )
-        for task_path in task_paths:
-            self.task_files_healthcheck.check(task_path)
-        return task_paths
+
+        return [
+            task_path
+            for task_path in self._traverse_directory(
+                self.source_tree, self.depth
+            )
+            if self.task_files_healthcheck.check(
+                task_path, raise_exception=False
+            )
+        ]

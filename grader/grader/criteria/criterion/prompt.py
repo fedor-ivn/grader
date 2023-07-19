@@ -2,7 +2,9 @@ from grader.criteria.criterion.criterion import Criterion
 from grader.ibash.session import IBashSession
 from grader.output.result.result import Result
 
-from grader.criteria.criterion.criterion_output.criterion_output import CriterionOutput
+from grader.criteria.criterion.criterion_output.criterion_output import (
+    CriterionOutput,
+)
 
 
 class PromptCriterion(Criterion):
@@ -28,14 +30,18 @@ class PromptCriterion(Criterion):
         self._enter = enter
         self._result = result
 
-    def test(self, solution: IBashSession) -> CriterionOutput:
+    def test(
+        self, solution: IBashSession
+    ) -> CriterionOutput:
         """
         Runs a test of the function and returns the output
 
         Args:
             solution (IBashSession): a started bash session
         """
-        is_expected = solution.prompt(self._expected_prompt, self._enter)
+        is_expected = solution.prompt(
+            self._expected_prompt, self._enter
+        )
         return CriterionOutput(
             is_passed=is_expected,
             feedback=self._result.result(is_expected),

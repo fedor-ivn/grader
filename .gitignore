@@ -1,6 +1,6 @@
 .idea/
 venv/
-tasks-dictionary
+tasks_dictionary
 __pycache__
 .mypy_cache
 tmp

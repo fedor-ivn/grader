@@ -41,8 +41,8 @@ class Test(TestTemplate):
         self._criteria = SequentialCriteria(
             [
                 PromptCriterion(
-                    expected_prompt='> ',
-                    enter='help',
+                    expected_prompt="> ",
+                    enter="help",
                     result=Result(
                         feedback=Feedback(
                             positive="Код запускается корректно",

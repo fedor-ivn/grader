@@ -8,8 +8,10 @@ from bot.inner_bot import Bot
 from bot.token import DotenvToken
 from arguments.keyboard.button import Button
 from arguments.keyboard.keyboard import ReplyKeyboard
-from arguments.keyboard.create import CreateKeyboard
-from arguments.keyboard.list_to_buttons import ListToButtons
+from eobot.arguments.keyboard.abstract import (
+    AbstractKeyboard,
+)
+from eobot.arguments.keyboard.grid import GridKeyboard
 from bot.inner_bot import Bot
 from eobot.update.filter.text import OnMatchedText
 from tgtypes.message.text import TextMessage
@@ -49,8 +51,6 @@ from grader.source_directory.required_file import (
 from grader.task.directory import TasksDirectory
 from grader.task.symlink import TasksSymlinks
 
-from grader.task.active_tasks import ActiveTasks
-
 
 class GreetingText(MessageText):
     def to_dict(self) -> dict[str, Any]:
@@ -73,48 +73,65 @@ developers:
         ).to_dict()
 
 
+class FSM:
+    def __init__(self, states: list[str]) -> None:
+        self._states = states
+
+    def initial(self) -> str:
+        return self._states[0]
+
+    def next(self, state: str) -> str:
+        return self._states[
+            (self._states.index(state) + 1)
+            % len(self._states)
+        ]
+
+
+class UserState:
+    def __init__(
+        self, user_id: int, fsm: FSM, database
+    ) -> None:
+        self._user_id = user_id
+        self._fsm = fsm
+        self._database = database
+
+    def next(self) -> "UserState":
+        return UserState(
+            self._user_id, self._fsm, self._database
+        )
+
+
+class TasksKeyboard(AbstractKeyboard):
+    def __init__(self, tasks_directory: TasksDirectory):
+        self._tasks_directory = tasks_directory
+
+    def to_dict(self) -> dict[str, Any]:
+        return GridKeyboard(
+            [
+                Button(task.name())
+                for task in self._tasks_directory.tasks()
+            ],
+            2,
+        ).to_dict()
+
+
 class Hello(OnTextMessage):
     def __init__(
         self,
+        tasks_keyboard: TasksKeyboard,
         log: AbstractLog = NoLog(),
     ) -> None:
+        self._tasks_keyboard = tasks_keyboard
         self._log = log
 
     def handle(
         self, bot: Bot, message: TextMessage
     ) -> None:
-        ###############################
-        # todo: xyi
-        script_path = os.path.abspath(
-            os.path.dirname(__file__)
-        )
-        tasks_directory = TasksDirectory(
-            TasksSymlinks(
-                f"{script_path}/tasks_directory",
-                SourceDirectory(
-                    f"{script_path}/../../checkers",
-                    TaskFilesHealthcheck(
-                        [
-                            TaskFileGitkeep(),
-                        ]
-                    ),
-                    depth=2,
-                ),
-            ),
-        )
-
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
                 GreetingText(),
-                reply_markup=CreateKeyboard(
-                    ListToButtons(
-                        ActiveTasks(
-                            f"{script_path}/tasks_directory",
-                            tasks_directory.tasks_list(),
-                        ).active_tasks_list()
-                    ).buttons_list()
-                ).create(),
+                reply_markup=self._tasks_keyboard,
                 log=self._log,
             )
         )
@@ -141,14 +158,14 @@ class GradeTask(OnDocumentMessage):
 
             print(solution)
 
-            print(self.tasks_directory.tasks_list())
+            print(self.tasks_directory.tasks())
 
             try:
                 bot.call_method(
                     SendMessage(
                         message.chat.create_destination(),
                         PlainText(
-                            self.tasks_directory.get_task(
+                            self.tasks_directory.task(
                                 "meme-factory"
                             )
                             .create_test()
@@ -157,9 +174,20 @@ class GradeTask(OnDocumentMessage):
                         reply=ReplyingMessage(message.id),
                     )
                 )
+            except KeyError:
+                bot.call_method(
+                    SendMessage(
+                        message.chat.create_destination(),
+                        PlainText(
+                            (
+                                "Sorry, this task is not implemented "
+                                "yet or does not exist."
+                            )
+                        ),
+                    )
+                )
             except Exception as e:
-                print(e)
-                pass
+                self._log.error(str(e))
 
 
 if __name__ == "__main__":
@@ -168,38 +196,45 @@ if __name__ == "__main__":
         format="%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s",
         datefmt="%H:%M:%S",
     ).configure()
+
     script_path = os.path.abspath(os.path.dirname(__file__))
+    tasks_directory = TasksDirectory(
+        TasksSymlinks(
+            f"{script_path}/tasks_directory",
+            SourceDirectory(
+                f"{script_path}/../../checkers",
+                TaskFilesHealthcheck(
+                    [
+                        # temporary plug to avoid healthcheck errors
+                        TaskFileGitkeep(),
+                    ]
+                ),
+                depth=2,
+            ),
+        ),
+    )
 
     Bot(DotenvToken("BOT_TOKEN", DotEnv(".env"))).start(
         Polling(
             EventLoop(
                 Events(
                     on_text_message=[
-                        Hello(log=log),
+                        Hello(
+                            TasksKeyboard(tasks_directory),
+                            log=log,
+                        ),
                         OnMatchedText(
                             "/grade",
-                            Hello(log=log),
+                            Hello(
+                                TasksKeyboard(
+                                    tasks_directory
+                                ),
+                                log=log,
+                            ),
                         ),
                     ],
                     on_document_message=[
-                        GradeTask(
-                            TasksDirectory(
-                                TasksSymlinks(
-                                    f"{script_path}/tasks_directory",
-                                    SourceDirectory(
-                                        f"{script_path}/../../checkers",
-                                        TaskFilesHealthcheck(
-                                            [
-                                                # temporary plug to avoid healthcheck errors
-                                                TaskFileGitkeep(),
-                                            ]
-                                        ),
-                                        depth=2,
-                                    ),
-                                ),
-                            ),
-                            log=log,
-                        ),
+                        GradeTask(tasks_directory, log=log),
                     ],
                     on_unknown_message=[
                         UnknownMessageWarning(log=log),

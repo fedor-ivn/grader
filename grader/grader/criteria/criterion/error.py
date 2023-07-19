@@ -4,7 +4,9 @@ from grader.ibash.session import IBashSession
 from grader.ibash.session import IBashSession
 from grader.output.result.result import Result
 
-from grader.criteria.criterion.criterion_output.criterion_output import CriterionOutput
+from grader.criteria.criterion.criterion_output.criterion_output import (
+    CriterionOutput,
+)
 
 
 class ErrorCriterion(Criterion):
@@ -22,7 +24,9 @@ class ErrorCriterion(Criterion):
         self._result = result
         self._is_expected = False
 
-    def test(self, solution: IBashSession) -> CriterionOutput:
+    def test(
+        self, solution: IBashSession
+    ) -> CriterionOutput:
         """
         Runs a test of the function and returns the output
 

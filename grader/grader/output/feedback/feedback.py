@@ -7,7 +7,9 @@ class Feedback(ABC):
     the user after the solution evaluation
     """
 
-    def __init__(self, positive: str, negative: str) -> None:
+    def __init__(
+        self, positive: str, negative: str
+    ) -> None:
         """
         Creates a new instance of the Feedback class
 

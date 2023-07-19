@@ -21,7 +21,9 @@ class IBash:
             path (str): the path to the script
         """
         self._path = path
-        self._pty = NoEchoPseudoTerminal(SimplePseudoTerminal())
+        self._pty = NoEchoPseudoTerminal(
+            SimplePseudoTerminal()
+        )
         self._args: list[str] = []
 
     def start_session(self) -> IBashSession:

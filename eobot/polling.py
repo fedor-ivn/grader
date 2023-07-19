@@ -3,7 +3,7 @@ from arguments.get_updates.allowed_updates import (
     AbstractAllowedUpdates,
     DefaultAllowedUpdates,
 )
-from state import State
+from eobot.state import State
 from time import sleep
 from arguments.argument import MethodArgument
 from arguments.inline import InlineArgument
