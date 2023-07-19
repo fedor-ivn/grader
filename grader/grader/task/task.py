@@ -1,22 +1,19 @@
 import importlib
 import importlib.util
-from grader.tests.test import TestTemplate
+from grader.criteria.sequential_criteria import SequentialCriteria
 
 
 class Task:
     def __init__(self, task_path: str):
         self.task_path = task_path
 
-    def name(self) -> str:
-        return self.task_path.split("/")[-1]
-
-    def create_test(self) -> TestTemplate:
+    def criteria(self) -> SequentialCriteria:
         spec = importlib.util.spec_from_file_location(
             "Test", f"{self.task_path}/test.py"
         )
         module = importlib.util.module_from_spec(spec)  # type: ignore
         spec.loader.exec_module(module)  # type: ignore
 
-        test = module.__dict__["Test"]()
+        criteria = module.criteria
 
-        return test  # type: ignore
+        return criteria  # type: ignore

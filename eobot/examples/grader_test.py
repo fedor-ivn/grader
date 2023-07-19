@@ -51,6 +51,10 @@ from grader.source_directory.required_file import (
 from grader.task.directory import TasksDirectory
 from grader.task.symlink import TasksSymlinks
 
+from grader.task.active_tasks import ActiveTasks
+
+from grader.tests.test import Test
+
 
 class GreetingText(MessageText):
     def to_dict(self) -> dict[str, Any]:
@@ -165,11 +169,11 @@ class GradeTask(OnDocumentMessage):
                     SendMessage(
                         message.chat.create_destination(),
                         PlainText(
-                            self.tasks_directory.task(
-                                "meme-factory"
-                            )
-                            .create_test()
-                            .output(IBash(solution))
+                            Test(
+                                self.tasks_directory.get_task(
+                                    "meme-factory"
+                                ).criteria()
+                            ).output(IBash(solution))
                         ),
                         reply=ReplyingMessage(message.id),
                     )

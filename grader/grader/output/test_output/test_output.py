@@ -18,4 +18,7 @@ class TestOutput(ABC):
         self.feedback = feedback
 
     def output(self) -> str:
+        """
+        Returns the final output of the test.
+        """
         return f"Results:\n{self.feedback}\nOverall score: {self.score}"

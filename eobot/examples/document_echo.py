@@ -1,6 +1,10 @@
 import logging
+import os
 from typing import Any
 
+from arguments.message.replying import ReplyingMessage
+from bot.inner_bot import Bot
+from bot.token import DotenvToken
 from bot.inner_bot import Bot
 from eobot.update.filter.text import OnMatchedText
 from tgtypes.message.text import TextMessage
@@ -14,6 +18,9 @@ from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
 from methods.send_message import SendMessage
 from update.events import Events
+from tgtypes.message.document import (
+    DocumentMessage,
+)
 from polling import Polling, PollingConfig
 from dotenv.main import DotEnv
 
@@ -23,14 +30,15 @@ from update.message.unknown import (
     UnknownMessageWarning,
 )
 
+
 class GreetingText(MessageText):
     def to_dict(self) -> dict[str, Any]:
         return PlainText(
             """
-This is echo bot - an example of the usage of the eobot
+This is document echo bot - an example of the usage of the eobot
 library that we have created. The current example is 
 used for the showcase of the receiving and sending
-simple text messages.
+the document messages.
 
 In case of any problems, do not hesitate to contact the
 developers:
@@ -60,27 +68,43 @@ class Hello(OnTextMessage):
         )
 
 
-class Echo(OnTextMessage):
-    def __init__(self, log: AbstractLog = NoLog()) -> None:
+class Echo(OnDocumentMessage):
+    def __init__(
+        self,
+        log: AbstractLog = NoLog(),
+    ) -> None:
         self._log = log
 
     def handle(
-        self, bot: Bot, message: TextMessage
+        self, bot: Bot, message: DocumentMessage
     ) -> None:
-        bot.call_method(
-            SendMessage(
-                message.chat.create_destination(),
-                text=PlainText(message.text.value),
-            )
+        fetched_document = bot.call_method(
+            message.document.fetch()
         )
+
+        with bot.open_document(fetched_document) as file:
+            content = file.read().decode("utf-8")
+
+            try:
+                bot.call_method(
+                    SendMessage(
+                        message.chat.create_destination(),
+                        PlainText(content),
+                        reply=ReplyingMessage(message.id),
+                    )
+                )
+            except Exception as e:
+                print(e)
+                pass
 
 
 if __name__ == "__main__":
     log = LogConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format="%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s",
         datefmt="%H:%M:%S",
     ).configure()
+    script_path = os.path.abspath(os.path.dirname(__file__))
 
     Bot(DotenvToken("BOT_TOKEN", DotEnv(".env"))).start(
         Polling(
@@ -91,7 +115,11 @@ if __name__ == "__main__":
                             "/start",
                             Hello(log=log),
                         ),
-                        Echo(log=log),
+                    ],
+                    on_document_message=[
+                        Echo(
+                            log=log,
+                        ),
                     ],
                     on_unknown_message=[
                         UnknownMessageWarning(log=log),

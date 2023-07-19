@@ -37,7 +37,7 @@ class IBashSession:
 
     def expect_output(self, expected_output: str) -> bool:
         """
-        Reads the buffer, waiting for the output of the script
+        Reads the whole buffer, waiting for the output of the script
 
         Args:
             expected_output (str): the string that is expected to be received from stdout
@@ -66,12 +66,21 @@ class IBashSession:
             time.sleep(0.1)
 
         flags = fcntl.fcntl(self._master, fcntl.F_GETFL)
-        fcntl.fcntl(
-            self._master,
-            fcntl.F_SETFL,
-            flags & ~os.O_NONBLOCK,
-        )
+        fcntl.fcntl(self._master, fcntl.F_SETFL, flags & ~os.O_NONBLOCK)
+
         return line == expected_output.encode()
+    
+
+    def expect_single_output(self, expected_output: str) -> bool:
+        """
+        Reads the single output from the buffer
+
+        Args:
+            expected_output (str): the string that is expected to be received from stdout
+        """
+        ok = self.expect_output(expected_output)
+        return ok
+
 
     def prompt(
         self, expected_prompt: str, enter: str
