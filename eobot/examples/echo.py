@@ -18,17 +18,17 @@ from polling import Polling, PollingConfig
 from dotenv.main import DotEnv
 
 from logger.log import LogConfig
-from eobot.update.message.document import OnDocumentMessage
 from update.message.unknown import (
     UnknownMessageWarning,
 )
+
 
 class GreetingText(MessageText):
     def to_dict(self) -> dict[str, Any]:
         return PlainText(
             """
 This is echo bot - an example of the usage of the eobot
-library that we have created. The current example is 
+library that we have created. The current example is
 used for the showcase of the receiving and sending
 simple text messages.
 
@@ -50,7 +50,7 @@ class Hello(OnTextMessage):
 
     def handle(
         self, bot: Bot, message: TextMessage
-    ) -> None:
+    ) -> bool:
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
@@ -59,6 +59,8 @@ class Hello(OnTextMessage):
             )
         )
 
+        return True
+
 
 class Echo(OnTextMessage):
     def __init__(self, log: AbstractLog = NoLog()) -> None:
@@ -66,13 +68,14 @@ class Echo(OnTextMessage):
 
     def handle(
         self, bot: Bot, message: TextMessage
-    ) -> None:
+    ) -> bool:
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
                 text=PlainText(message.text.value),
             )
         )
+        return True
 
 
 if __name__ == "__main__":

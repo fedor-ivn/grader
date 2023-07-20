@@ -2,7 +2,6 @@ from grader.criteria.sequential_criteria import (
     SequentialCriteria,
 )
 from grader.ibash.ibash import IBash
-from grader.tests.test import Test
 from grader.output.result.result import Result
 from grader.output.feedback.feedback import (
     Feedback,

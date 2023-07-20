@@ -7,9 +7,6 @@ from grader.criteria.criterion.prompt import (
 from grader.criteria.criterion.output import (
     OutputCriterion,
 )
-
-from grader.ibash.ibash import IBash
-from grader.tests.test import Test
 from grader.output.result.result import Result
 from grader.output.feedback.feedback import (
     Feedback,
@@ -24,7 +21,6 @@ from grader.criteria.criterion.size import (
     SizeCriterion,
 )
 
-from grader.tests.test import TestTemplate
 from grader.output.test_output.test_output import TestOutput
 
 import os

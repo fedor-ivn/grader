@@ -1,7 +1,7 @@
 import logging
 import os
-import pprint
 from typing import Any
+from vedis import Vedis
 
 from arguments.message.replying import ReplyingMessage
 from bot.inner_bot import Bot
@@ -13,12 +13,15 @@ from eobot.arguments.keyboard.abstract import (
 )
 from eobot.arguments.keyboard.grid import GridKeyboard
 from bot.inner_bot import Bot
+from eobot.bot.inner_bot import Bot
+from eobot.fsm.fsm import FSM
+from eobot.fsm.user_state import UserStates
+from eobot.tgtypes.message.text import TextMessage
+from eobot.update.filter.state import OnState
 from eobot.update.filter.text import OnMatchedText
-from tgtypes.message.text import TextMessage
 from eobot.update.message.text import OnTextMessage
 from event_loop import EventLoop
 from eobot.arguments.message.text import (
-    MarkdownV2Text,
     MessageText,
     PlainText,
 )
@@ -47,13 +50,10 @@ from grader.source_directory.files_healthcheck import (
 )
 from grader.source_directory.required_file import (
     TaskFileGitkeep,
+    TaskFileTestPy,
 )
 from grader.task.directory import TasksDirectory
 from grader.task.symlink import TasksSymlinks
-
-from grader.task.active_tasks import ActiveTasks
-
-from grader.tests.test import Test
 
 
 class GreetingText(MessageText):
@@ -77,34 +77,6 @@ developers:
         ).to_dict()
 
 
-class FSM:
-    def __init__(self, states: list[str]) -> None:
-        self._states = states
-
-    def initial(self) -> str:
-        return self._states[0]
-
-    def next(self, state: str) -> str:
-        return self._states[
-            (self._states.index(state) + 1)
-            % len(self._states)
-        ]
-
-
-class UserState:
-    def __init__(
-        self, user_id: int, fsm: FSM, database
-    ) -> None:
-        self._user_id = user_id
-        self._fsm = fsm
-        self._database = database
-
-    def next(self) -> "UserState":
-        return UserState(
-            self._user_id, self._fsm, self._database
-        )
-
-
 class TasksKeyboard(AbstractKeyboard):
     def __init__(self, tasks_directory: TasksDirectory):
         self._tasks_directory = tasks_directory
@@ -123,14 +95,16 @@ class Hello(OnTextMessage):
     def __init__(
         self,
         tasks_keyboard: TasksKeyboard,
+        user_states: UserStates,
         log: AbstractLog = NoLog(),
     ) -> None:
         self._tasks_keyboard = tasks_keyboard
+        self._user_states = user_states
         self._log = log
 
     def handle(
         self, bot: Bot, message: TextMessage
-    ) -> None:
+    ) -> bool:
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
@@ -140,19 +114,72 @@ class Hello(OnTextMessage):
             )
         )
 
+        self._user_states.next(message.chat.id)
+        return True
+
+
+class ChooseTask(OnTextMessage):
+    def __init__(
+        self,
+        tasks_directory: TasksDirectory,
+        user_states: UserStates,
+        db: Vedis,
+        log: AbstractLog = NoLog(),
+    ) -> None:
+        self.tasks_directory = tasks_directory
+        self._user_states = user_states
+        self._log = log
+        self._db = db
+
+    def handle(
+        self, bot: Bot, message: TextMessage
+    ) -> bool:
+        if not self.tasks_directory.is_present(
+            message.text.value
+        ):
+            bot.call_method(
+                SendMessage(
+                    message.chat.create_destination(),
+                    PlainText(
+                        (
+                            "Sorry, this task is not implemented "
+                            "yet or does not exist."
+                        )
+                    ),
+                )
+            )
+            return True
+
+        self._db[message.chat.id] = message.text.value
+        bot.call_method(
+            SendMessage(
+                message.chat.create_destination(),
+                PlainText("Now send me your solution!"),
+                reply=ReplyingMessage(message.id),
+                log=self._log,
+            )
+        )
+
+        self._user_states.next(message.chat.id)
+        return True
+
 
 class GradeTask(OnDocumentMessage):
     def __init__(
         self,
         tasks_directory: TasksDirectory,
+        user_states: UserStates,
+        db_tasks: Vedis,
         log: AbstractLog = NoLog(),
     ) -> None:
-        self._log = log
         self.tasks_directory = tasks_directory
+        self._user_states = user_states
+        self._db_tasks = db_tasks
+        self._log = log
 
     def handle(
         self, bot: Bot, message: DocumentMessage
-    ) -> None:
+    ) -> bool:
         fetched_document = bot.call_method(
             message.document.fetch()
         )
@@ -160,38 +187,30 @@ class GradeTask(OnDocumentMessage):
         with bot.open_document(fetched_document) as file:
             solution = file.read().decode("utf-8")
 
-            print(solution)
+            self._log.debug(solution)
 
-            print(self.tasks_directory.tasks())
+            self._log.debug(
+                str(self.tasks_directory.tasks())
+            )
 
             try:
                 bot.call_method(
                     SendMessage(
                         message.chat.create_destination(),
                         PlainText(
-                            Test(
-                                self.tasks_directory.get_task(
-                                    "meme-factory"
-                                ).criteria()
+                            self.tasks_directory.task(
+                                self._db_tasks[
+                                    message.chat.id
+                                ].decode("utf-8")
                             ).output(IBash(solution))
                         ),
                         reply=ReplyingMessage(message.id),
                     )
                 )
-            except KeyError:
-                bot.call_method(
-                    SendMessage(
-                        message.chat.create_destination(),
-                        PlainText(
-                            (
-                                "Sorry, this task is not implemented "
-                                "yet or does not exist."
-                            )
-                        ),
-                    )
-                )
             except Exception as e:
                 self._log.error(str(e))
+        self._user_states.next(message.chat.id)
+        return True
 
 
 if __name__ == "__main__":
@@ -210,12 +229,17 @@ if __name__ == "__main__":
                 TaskFilesHealthcheck(
                     [
                         # temporary plug to avoid healthcheck errors
-                        TaskFileGitkeep(),
+                        TaskFileTestPy(),
                     ]
                 ),
                 depth=2,
             ),
         ),
+    )
+    db_tasks = Vedis(":mem:")
+    user_states = UserStates(
+        FSM(["start", "choose_task", "grade_task"]),
+        Vedis(":mem:"),
     )
 
     Bot(DotenvToken("BOT_TOKEN", DotEnv(".env"))).start(
@@ -223,22 +247,38 @@ if __name__ == "__main__":
             EventLoop(
                 Events(
                     on_text_message=[
-                        Hello(
-                            TasksKeyboard(tasks_directory),
-                            log=log,
-                        ),
-                        OnMatchedText(
-                            "/grade",
-                            Hello(
+                        OnState(  # type: ignore
+                            "start",
+                            user_states,
+                            Hello(  # type: ignore
                                 TasksKeyboard(
                                     tasks_directory
                                 ),
+                                user_states,
                                 log=log,
+                            ),
+                        ),
+                        OnState(
+                            "choose_task",
+                            user_states,
+                            ChooseTask(  # type: ignore
+                                tasks_directory,
+                                user_states,
+                                db_tasks,
                             ),
                         ),
                     ],
                     on_document_message=[
-                        GradeTask(tasks_directory, log=log),
+                        OnState(  # type: ignore
+                            "grade_task",
+                            user_states,
+                            GradeTask(  # type: ignore
+                                tasks_directory,
+                                user_states,
+                                db_tasks,
+                                log=log,
+                            ),
+                        )
                     ],
                     on_unknown_message=[
                         UnknownMessageWarning(log=log),

@@ -48,23 +48,26 @@ class ArgumentsCriterion(Criterion):
 
         # todo: govnokod
 
-        if collected_args[0] != "-gravity":
+        if len(collected_args) < 6:
             success = False
+        else:
+            if collected_args[0] != "-gravity":
+                success = False
 
-        if collected_args[1] not in ["south", "north"]:
-            success = False
+            if collected_args[1] not in ["south", "north"]:
+                success = False
 
-        if collected_args[2] != "-annotate":
-            success = False
+            if collected_args[2] != "-annotate":
+                success = False
 
-        if collected_args[3] != "0":
-            success = False
+            if collected_args[3] != "0":
+                success = False
 
-        if collected_args[4] != "четыре":
-            success = False
+            if collected_args[4] != "четыре":
+                success = False
 
-        if collected_args[5] != "six-four.jpg":
-            success = False
+            if collected_args[5] != "six-four.jpg":
+                success = False
 
         self._is_expected = success
 

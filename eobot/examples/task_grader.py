@@ -1,7 +1,6 @@
 import importlib
 import importlib.util
 from grader.task.directory import TasksDirectory
-from grader.tests.test import TestTemplate
 
 
 class TaskGrader:

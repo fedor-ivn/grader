@@ -50,7 +50,8 @@ class Event(Generic[T]):
             self._log.info(
                 f"Handling entity with {handler}"
             )
-            handler.handle(bot, entity)
+            if handler.handle(bot, entity):
+                break
 
 
 class Events:

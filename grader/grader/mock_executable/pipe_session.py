@@ -15,5 +15,6 @@ class PipeSession:
     def collect_args(self) -> list[str]:
         self.thread.join(timeout=self.timeout)
         if self.thread.is_alive():
-            raise TimeoutError
+            return []
+            # raise TimeoutError
         return self.args

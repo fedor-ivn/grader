@@ -8,14 +8,6 @@ from grader.criteria.criterion.output import (
     OutputCriterion,
 )
 
-from grader.mock_executable.mock_executable import (
-    MockExecutable,
-)
-from grader.criteria.criterion.arguments import (
-    ArgumentsCriterion,
-)
-from grader.ibash.ibash import IBash
-from grader.tests.test import TestTemplate
 from grader.output.result.result import Result
 from grader.output.feedback.feedback import (
     Feedback,

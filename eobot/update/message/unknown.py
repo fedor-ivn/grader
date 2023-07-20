@@ -35,7 +35,7 @@ class OnUnknownMessage(OnEvent["UnknownMessage"]):
     @abstractmethod
     def handle(
         self, bot: Bot, message: "UnknownMessage"
-    ) -> None:
+    ) -> bool:
         ...
 
 
@@ -45,7 +45,7 @@ class UnknownMessageWarning(OnUnknownMessage):
 
     def handle(
         self, bot: Bot, message: "UnknownMessage"
-    ) -> None:
+    ) -> bool:
         self._log.warning(
             (
                 "Received unknown message. "
@@ -53,3 +53,4 @@ class UnknownMessageWarning(OnUnknownMessage):
                 "implemented yet or is not supported"
             )
         )
+        return True

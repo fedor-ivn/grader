@@ -2,7 +2,6 @@ from grader.criteria.sequential_criteria import (
     SequentialCriteria,
 )
 from grader.ibash.ibash import IBash
-from grader.tests.test import Test
 from grader.output.result.result import Result
 from grader.output.feedback.feedback import (
     Feedback,
@@ -20,7 +19,7 @@ from grader.criteria.criterion.output import (
 criteria = SequentialCriteria(
     [
         OutputCriterion(
-            expected_output='\\ [] _ () /\r\n',
+            expected_output="\\ [] _ () /\r\n",
             result=Result(
                 feedback=Feedback(
                     positive="Строка выводится верно",
@@ -43,8 +42,8 @@ criteria = SequentialCriteria(
     ]
 )
 
-print(
-    Test(criteria).output(
-        IBash('echo "\\ [] _ () /"')
-    )
-)
+# print(
+#     Test(criteria).output(
+#         IBash('echo "\\ [] _ () /"')
+#     )
+# )

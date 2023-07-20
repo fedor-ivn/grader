@@ -35,5 +35,5 @@ class OnTextMessage(OnEvent["TextMessage"]):
     @abstractmethod
     def handle(
         self, bot: Bot, message: "TextMessage"
-    ) -> None:
+    ) -> bool:
         ...

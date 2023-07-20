@@ -36,7 +36,7 @@ class GreetingText(MessageText):
         return PlainText(
             """
 This is document echo bot - an example of the usage of the eobot
-library that we have created. The current example is 
+library that we have created. The current example is
 used for the showcase of the receiving and sending
 the document messages.
 
@@ -58,7 +58,7 @@ class Hello(OnTextMessage):
 
     def handle(
         self, bot: Bot, message: TextMessage
-    ) -> None:
+    ) -> bool:
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
@@ -66,6 +66,7 @@ class Hello(OnTextMessage):
                 log=self._log,
             )
         )
+        return True
 
 
 class Echo(OnDocumentMessage):
@@ -77,7 +78,7 @@ class Echo(OnDocumentMessage):
 
     def handle(
         self, bot: Bot, message: DocumentMessage
-    ) -> None:
+    ) -> bool:
         fetched_document = bot.call_method(
             message.document.fetch()
         )
@@ -93,9 +94,11 @@ class Echo(OnDocumentMessage):
                         reply=ReplyingMessage(message.id),
                     )
                 )
+
+                return True
             except Exception as e:
                 print(e)
-                pass
+                return True
 
 
 if __name__ == "__main__":

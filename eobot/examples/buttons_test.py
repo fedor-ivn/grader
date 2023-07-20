@@ -34,7 +34,7 @@ class GreetingText(MessageText):
         return PlainText(
             """
 This is button echo bot - an example of the usage of the eobot
-library that we have created. The current example is 
+library that we have created. The current example is
 used for the showcase of the creating the keyboard buttons.
 
 In case of any problems, do not hesitate to contact the
@@ -55,7 +55,7 @@ class Hello(OnTextMessage):
 
     def handle(
         self, bot: Bot, message: TextMessage
-    ) -> None:
+    ) -> bool:
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
@@ -63,6 +63,7 @@ class Hello(OnTextMessage):
                 log=self._log,
             )
         )
+        return True
 
 
 class ButtonEcho(OnTextMessage):
@@ -71,15 +72,18 @@ class ButtonEcho(OnTextMessage):
 
     def handle(
         self, bot: Bot, message: TextMessage
-    ) -> None:
+    ) -> bool:
         bot.call_method(
             SendMessage(
                 message.chat.create_destination(),
                 PlainText("Button created!"),
-                reply_markup=ReplyKeyboard([[Button(message.text.value)]]),
+                reply_markup=ReplyKeyboard(
+                    [[Button(message.text.value)]]
+                ),
                 log=self._log,
             )
         )
+        return True
 
 
 if __name__ == "__main__":

@@ -14,7 +14,6 @@ from grader.criteria.criterion.arguments import (
     ArgumentsCriterion,
 )
 from grader.ibash.ibash import IBash
-from grader.tests.test import Test
 from grader.output.result.result import Result
 from grader.output.feedback.feedback import (
     Feedback,

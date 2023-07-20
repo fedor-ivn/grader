@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TypeVar
 from tgtypes.message.chat import Chat
-from update.construct_update import UpdateFactory
+from eobot.update.construct_update import UpdateFactory
 
 
 T = TypeVar("T")

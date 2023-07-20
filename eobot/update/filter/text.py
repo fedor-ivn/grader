@@ -19,13 +19,13 @@ class OnMatchedText(OnTextMessage):
 
     def handle(
         self, bot: Bot, message: TextMessage
-    ) -> None:
+    ) -> bool:
         self._log.debug("Try to match text message")
         self._log.debug(f"Text message: {message.text}")
 
         if message.text.match(self._regex):
             self._log.debug("Text message matched")
-            self._on_event.handle(bot, message)
-            return
+            return self._on_event.handle(bot, message)
 
         self._log.debug("Text message not matched")
+        return False
