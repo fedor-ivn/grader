@@ -13,9 +13,13 @@ from eobot.arguments.keyboard.abstract import (
 )
 from eobot.arguments.keyboard.grid import GridKeyboard
 from bot.inner_bot import Bot
+from eobot.arguments.keyboard.reply_keyboard_remove import (
+    ReplyKeyboardRemove,
+)
 from eobot.bot.inner_bot import Bot
 from eobot.fsm.fsm import FSM
-from eobot.fsm.user_state import UserStates
+from eobot.fsm.user_state.abstract import T
+from eobot.fsm.user_state.state import UserStates
 from eobot.tgtypes.message.text import TextMessage
 from eobot.update.filter.state import OnState
 from eobot.update.filter.text import OnMatchedText
@@ -95,7 +99,7 @@ class Hello(OnTextMessage):
     def __init__(
         self,
         tasks_keyboard: TasksKeyboard,
-        user_states: UserStates,
+        user_states: UserStates[T],
         log: AbstractLog = NoLog(),
     ) -> None:
         self._tasks_keyboard = tasks_keyboard
@@ -122,7 +126,7 @@ class ChooseTask(OnTextMessage):
     def __init__(
         self,
         tasks_directory: TasksDirectory,
-        user_states: UserStates,
+        user_states: UserStates[T],
         db: Vedis,
         log: AbstractLog = NoLog(),
     ) -> None:
@@ -156,6 +160,7 @@ class ChooseTask(OnTextMessage):
                 message.chat.create_destination(),
                 PlainText("Now send me your solution!"),
                 reply=ReplyingMessage(message.id),
+                reply_markup=ReplyKeyboardRemove(),
                 log=self._log,
             )
         )
@@ -168,7 +173,7 @@ class GradeTask(OnDocumentMessage):
     def __init__(
         self,
         tasks_directory: TasksDirectory,
-        user_states: UserStates,
+        user_states: UserStates[T],
         db_tasks: Vedis,
         log: AbstractLog = NoLog(),
     ) -> None:
@@ -236,9 +241,22 @@ if __name__ == "__main__":
             ),
         ),
     )
+
+    start: OnState[OnTextMessage] = OnState(
+        "start", log=log
+    )
+    choose_task: OnState[OnTextMessage] = OnState(
+        "choose_task", log=log
+    )
+    grade_task: OnState[OnDocumentMessage] = OnState(
+        "grade_task", log=log
+    )
+
     db_tasks = Vedis(":mem:")
-    user_states = UserStates(
-        FSM(["start", "choose_task", "grade_task"]),
+    user_states: UserStates[
+        OnTextMessage | OnDocumentMessage
+    ] = UserStates(
+        FSM([start, choose_task, grade_task]),
         Vedis(":mem:"),
     )
 
@@ -247,20 +265,18 @@ if __name__ == "__main__":
             EventLoop(
                 Events(
                     on_text_message=[
-                        OnState(  # type: ignore
-                            "start",
-                            user_states,
+                        start.with_states(user_states).do(
                             Hello(  # type: ignore
                                 TasksKeyboard(
                                     tasks_directory
                                 ),
                                 user_states,
                                 log=log,
-                            ),
+                            )
                         ),
-                        OnState(
-                            "choose_task",
-                            user_states,
+                        choose_task.with_states(
+                            user_states
+                        ).do(
                             ChooseTask(  # type: ignore
                                 tasks_directory,
                                 user_states,
@@ -269,15 +285,15 @@ if __name__ == "__main__":
                         ),
                     ],
                     on_document_message=[
-                        OnState(  # type: ignore
-                            "grade_task",
-                            user_states,
+                        grade_task.with_states(
+                            user_states
+                        ).do(
                             GradeTask(  # type: ignore
                                 tasks_directory,
                                 user_states,
                                 db_tasks,
                                 log=log,
-                            ),
+                            )
                         )
                     ],
                     on_unknown_message=[
