@@ -1,3 +1,5 @@
+[![EO principles respected
+here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![](https://tokei.rs/b1/github/fedor-ivn/grader)](https://github.com/fedor-ivn/grader)
 [![Python](https://img.shields.io/badge/-Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
