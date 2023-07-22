@@ -1,0 +1,4 @@
+echo "linux
+is
+cool
+!"

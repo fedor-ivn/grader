@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "grader"
+name = "project"
 version = "0.1.0"
 description = ""
 authors = ["Probirochniy <afl_damir@mail.ru>"]
@@ -7,8 +7,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-interactive_bash = {path = "./interactive_bash/"}
+grader = {path = "./grader"}
 more-itertools = "^9.1.0"
+requests = "^2.31.0"
+types-requests = "^2.31.0.1"
+dacite = "^1.8.1"
+python-dotenv = "^1.0.0"
+logger = {path = "./logger"}
+vedis = "^0.7.2"
 
 
 [build-system]
