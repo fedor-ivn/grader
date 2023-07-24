@@ -2,9 +2,9 @@ import logging
 import os
 from typing import Any
 
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from bot.token import DotenvToken
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from eobot.update.filter.text import OnMatchedText
 from tgtypes.message.text import TextMessage
 from eobot.update.message.text import OnTextMessage

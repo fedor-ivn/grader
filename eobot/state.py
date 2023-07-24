@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from bot.inner_bot import Bot
+    from eobot.bot.bot import Bot
 
 
 class State(ABC):

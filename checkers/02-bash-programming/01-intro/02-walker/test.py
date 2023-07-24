@@ -13,15 +13,9 @@ from grader.output.feedback.feedback import (
 )
 from grader.output.score.score import Score
 
-from grader.criteria.criterion.error import (
-    ErrorCriterion,
-)
-
 from grader.criteria.criterion.size import (
     SizeCriterion,
 )
-
-from grader.output.test_output.test_output import TestOutput
 
 import os
 
@@ -88,7 +82,3 @@ criteria = SequentialCriteria(
         ),
     ]
 )
-
-
-# with open("reference-solution.sh") as file:
-#     print(Test().output(IBash(file.read())))

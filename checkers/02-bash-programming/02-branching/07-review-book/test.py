@@ -14,13 +14,6 @@ from grader.output.feedback.feedback import (
 )
 from grader.output.score.score import Score
 
-from grader.criteria.criterion.error import (
-    ErrorCriterion,
-)
-
-
-from grader.output.test_output.test_output import TestOutput
-
 HELP = "Доступные команды:\r\n\r\n\
   help         - вывести справку по командам\r\n\
   add-review   - добавить отзыв\r\n\
@@ -140,7 +133,3 @@ criteria = SequentialCriteria(
         ),
     ]
 )
-
-
-# with open("reference-solution.sh") as file:
-#     print(Test().output(IBash(file.read())))

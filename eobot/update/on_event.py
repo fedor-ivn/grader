@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 
 T = TypeVar("T")
 

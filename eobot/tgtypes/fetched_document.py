@@ -1,5 +1,5 @@
 from urllib.request import urlopen
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from dataclasses import dataclass
 from typing import Any
 

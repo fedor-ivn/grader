@@ -8,7 +8,7 @@ from time import sleep
 from arguments.argument import MethodArgument
 from arguments.inline import InlineArgument
 from arguments.merged import MergedArgument
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from event_loop import EventLoop
 from methods.get_updates import GetUpdates
 from logger.abstract_log import AbstractLog
