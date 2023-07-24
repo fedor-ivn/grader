@@ -13,7 +13,6 @@ from grader.mock_executable.mock_executable import (
 from grader.criteria.criterion.arguments import (
     ArgumentsCriterion,
 )
-from grader.ibash.ibash import IBash
 from grader.output.result.result import Result
 from grader.output.feedback.feedback import (
     Feedback,
@@ -87,9 +86,3 @@ criteria = SequentialCriteria(
         ),
     ]
 )
-
-
-# print(Test(criteria).output(IBash('''read -p "Подпись к мему: " caption
-# read -p "Название файла: " output_file
-# convert $TEMPLATE_FILE -gravity south -annotate 0 "$caption" $output_file
-# echo "Мем сохранён!"''')))
