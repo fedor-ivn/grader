@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from arguments.argument import MethodArgument
 from arguments.inline import InlineArgument
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 
 
 from logger.abstract_log import AbstractLog

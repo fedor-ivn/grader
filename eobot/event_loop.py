@@ -1,4 +1,4 @@
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from update.events import Events
 from update.update import Update
 from update.updates import Updates

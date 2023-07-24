@@ -4,25 +4,21 @@ from typing import Any
 from vedis import Vedis
 
 from arguments.message.replying import ReplyingMessage
-from bot.inner_bot import Bot
 from bot.token import DotenvToken
 from arguments.keyboard.button import Button
-from arguments.keyboard.keyboard import ReplyKeyboard
 from eobot.arguments.keyboard.abstract import (
     AbstractKeyboard,
 )
 from eobot.arguments.keyboard.grid import GridKeyboard
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from eobot.arguments.keyboard.reply_keyboard_remove import (
     ReplyKeyboardRemove,
 )
-from eobot.bot.inner_bot import Bot
 from eobot.fsm.fsm import FSM
 from eobot.fsm.user_state.abstract import T
 from eobot.fsm.user_state.state import UserStates
 from eobot.tgtypes.message.text import TextMessage
 from eobot.update.filter.state import OnState
-from eobot.update.filter.text import OnMatchedText
 from eobot.update.message.text import OnTextMessage
 from event_loop import EventLoop
 from eobot.arguments.message.text import (
@@ -233,7 +229,6 @@ if __name__ == "__main__":
                 f"{script_path}/../../checkers",
                 TaskFilesHealthcheck(
                     [
-                        # temporary plug to avoid healthcheck errors
                         TaskFileTestPy(),
                     ]
                 ),
@@ -266,7 +261,7 @@ if __name__ == "__main__":
                 Events(
                     on_text_message=[
                         start.with_states(user_states).do(
-                            Hello(  # type: ignore
+                            Hello(
                                 TasksKeyboard(
                                     tasks_directory
                                 ),
@@ -277,7 +272,7 @@ if __name__ == "__main__":
                         choose_task.with_states(
                             user_states
                         ).do(
-                            ChooseTask(  # type: ignore
+                            ChooseTask(
                                 tasks_directory,
                                 user_states,
                                 db_tasks,
@@ -288,7 +283,7 @@ if __name__ == "__main__":
                         grade_task.with_states(
                             user_states
                         ).do(
-                            GradeTask(  # type: ignore
+                            GradeTask(
                                 tasks_directory,
                                 user_states,
                                 db_tasks,

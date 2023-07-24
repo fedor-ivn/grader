@@ -1,6 +1,6 @@
 from typing import Sequence
 from arguments.argument import MethodArgument
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from exceptions import NoUpdatesException
 from update.events import Events
 from update.update import Update
