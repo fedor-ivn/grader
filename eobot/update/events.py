@@ -6,7 +6,7 @@ from typing import (
     Sequence,
     TypeVar,
 )
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 
 from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog

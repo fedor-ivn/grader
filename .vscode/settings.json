@@ -5,7 +5,8 @@
     "python.formatting.provider": "black",
     "python.linting.enabled": true,
     "python.analysis.typeCheckingMode": "basic",
-    "python.linting.mypyEnabled": true,
+    // "python.linting.mypyEnabled": true,
+    "python.linting.mypyEnabled": false,
 }
 // {
 //     "python.linting.ignorePatterns": [ "week04/*.py" ],

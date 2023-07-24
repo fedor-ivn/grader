@@ -4,21 +4,21 @@ from typing import Any
 from vedis import Vedis
 
 from arguments.message.replying import ReplyingMessage
-from bot.inner_bot import Bot
 from bot.token import DotenvToken
 from arguments.keyboard.button import Button
-from arguments.keyboard.keyboard import ReplyKeyboard
 from eobot.arguments.keyboard.abstract import (
     AbstractKeyboard,
 )
 from eobot.arguments.keyboard.grid import GridKeyboard
-from bot.inner_bot import Bot
-from eobot.bot.inner_bot import Bot
+from eobot.bot.bot import Bot
+from eobot.arguments.keyboard.reply_keyboard_remove import (
+    ReplyKeyboardRemove,
+)
 from eobot.fsm.fsm import FSM
-from eobot.fsm.user_state import UserStates
+from eobot.fsm.user_state.abstract import T
+from eobot.fsm.user_state.state import UserStates
 from eobot.tgtypes.message.text import TextMessage
 from eobot.update.filter.state import OnState
-from eobot.update.filter.text import OnMatchedText
 from eobot.update.message.text import OnTextMessage
 from event_loop import EventLoop
 from eobot.arguments.message.text import (
@@ -95,7 +95,7 @@ class Hello(OnTextMessage):
     def __init__(
         self,
         tasks_keyboard: TasksKeyboard,
-        user_states: UserStates,
+        user_states: UserStates[T],
         log: AbstractLog = NoLog(),
     ) -> None:
         self._tasks_keyboard = tasks_keyboard
@@ -122,7 +122,7 @@ class ChooseTask(OnTextMessage):
     def __init__(
         self,
         tasks_directory: TasksDirectory,
-        user_states: UserStates,
+        user_states: UserStates[T],
         db: Vedis,
         log: AbstractLog = NoLog(),
     ) -> None:
@@ -156,6 +156,7 @@ class ChooseTask(OnTextMessage):
                 message.chat.create_destination(),
                 PlainText("Now send me your solution!"),
                 reply=ReplyingMessage(message.id),
+                reply_markup=ReplyKeyboardRemove(),
                 log=self._log,
             )
         )
@@ -168,7 +169,7 @@ class GradeTask(OnDocumentMessage):
     def __init__(
         self,
         tasks_directory: TasksDirectory,
-        user_states: UserStates,
+        user_states: UserStates[T],
         db_tasks: Vedis,
         log: AbstractLog = NoLog(),
     ) -> None:
@@ -228,7 +229,6 @@ if __name__ == "__main__":
                 f"{script_path}/../../checkers",
                 TaskFilesHealthcheck(
                     [
-                        # temporary plug to avoid healthcheck errors
                         TaskFileTestPy(),
                     ]
                 ),
@@ -236,9 +236,22 @@ if __name__ == "__main__":
             ),
         ),
     )
+
+    start: OnState[OnTextMessage] = OnState(
+        "start", log=log
+    )
+    choose_task: OnState[OnTextMessage] = OnState(
+        "choose_task", log=log
+    )
+    grade_task: OnState[OnDocumentMessage] = OnState(
+        "grade_task", log=log
+    )
+
     db_tasks = Vedis(":mem:")
-    user_states = UserStates(
-        FSM(["start", "choose_task", "grade_task"]),
+    user_states: UserStates[
+        OnTextMessage | OnDocumentMessage
+    ] = UserStates(
+        FSM([start, choose_task, grade_task]),
         Vedis(":mem:"),
     )
 
@@ -247,21 +260,19 @@ if __name__ == "__main__":
             EventLoop(
                 Events(
                     on_text_message=[
-                        OnState(  # type: ignore
-                            "start",
-                            user_states,
-                            Hello(  # type: ignore
+                        start.with_states(user_states).do(
+                            Hello(
                                 TasksKeyboard(
                                     tasks_directory
                                 ),
                                 user_states,
                                 log=log,
-                            ),
+                            )
                         ),
-                        OnState(
-                            "choose_task",
-                            user_states,
-                            ChooseTask(  # type: ignore
+                        choose_task.with_states(
+                            user_states
+                        ).do(
+                            ChooseTask(
                                 tasks_directory,
                                 user_states,
                                 db_tasks,
@@ -269,15 +280,15 @@ if __name__ == "__main__":
                         ),
                     ],
                     on_document_message=[
-                        OnState(  # type: ignore
-                            "grade_task",
-                            user_states,
-                            GradeTask(  # type: ignore
+                        grade_task.with_states(
+                            user_states
+                        ).do(
+                            GradeTask(
                                 tasks_directory,
                                 user_states,
                                 db_tasks,
                                 log=log,
-                            ),
+                            )
                         )
                     ],
                     on_unknown_message=[

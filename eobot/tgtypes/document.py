@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from methods.get_file import GetFile
 
 if TYPE_CHECKING:
-    from bot.inner_bot import Bot
+    from eobot.bot.bot import Bot
 
 
 @dataclass

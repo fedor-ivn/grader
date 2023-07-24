@@ -1,4 +1,4 @@
-from eobot.bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from eobot.tgtypes.message.text import TextMessage
 from eobot.update.message.text import OnTextMessage
 from logger.abstract_log import AbstractLog

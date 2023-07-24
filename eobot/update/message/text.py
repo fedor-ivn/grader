@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from logger.abstract_log import AbstractLog
 from logger.no_log import NoLog
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from eobot.update.on_event import OnEvent
 from eobot.update.update import Update
 from typing import TYPE_CHECKING

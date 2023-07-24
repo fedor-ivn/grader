@@ -1,7 +1,7 @@
 from dacite import from_dict
 
 from methods.method import Method
-from bot.inner_bot import Bot
+from eobot.bot.bot import Bot
 from content import JsonRequestContent
 from methods.raw_method import RawMethod
 from tgtypes.user.profile_photos import ProfilePhotos
