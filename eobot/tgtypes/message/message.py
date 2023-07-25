@@ -14,15 +14,6 @@ class Message(UpdateFactory[T]):
     date: int
     chat: Chat
 
-    # media_group_id: str | None = None
-
-
-# todo: дамир, ну и нахуя ты это написал?
-# ты же знаешь, что это говно
-
-# official answer from dameer:
-# бля да я ж второпях перенёс чисто всю хуйню шобы разбить потом
-# за что хейт
 
 # @dataclass
 # class Message:
